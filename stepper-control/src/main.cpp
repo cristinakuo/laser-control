@@ -48,8 +48,8 @@ void setup() {
     // Set input and output ports
     init_ports();
     // Configurate stepper
-    config_step_mode(QUARTER); // Updates microsteps
-    byte stepperDirection = LOW; 
+    config_step_mode(FULL); // Updates microsteps
+    byte stepperDirection = HIGH; 
     digitalWrite(DIRECTION_PIN, stepperDirection);
 
     size_t steps_per_interval = FULL_STEPS_PER_INTERVAL * microsteps;
@@ -72,13 +72,15 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING); 
 
     initial_time = micros();
+    // DEBUG PARTE RAPIDA
+    i = ARRAY_MAX_LEN - 10; 
     while (must_stop == false) {
 
-        //// DEBUG LINEAR
+        // DEBUG LINEAR
         //digitalWrite(DIRECTION_PIN, HIGH);
         //for (i=0;i<table_size*steps_per_interval;i++) {
         //    step();
-        //    delayMicroseconds(30);    
+        //    delayMicroseconds(1600);    
         //}
         //must_stop = true;
         //continue; // DEBUG
@@ -128,10 +130,11 @@ void loop() {
 size_t create_table(functions_t f) {
     if (f == ARCHIMEDEAN) {
         long X0_measured = 10; // [mm]
+        long X_min = 1; // Ingresado a mano
         float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / steps_per_rev; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
-    
+        
         // Parameters of the function
         float a = 0.9489;
         float b = 0.6709;
