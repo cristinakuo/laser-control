@@ -14,6 +14,7 @@
 #define BUTTON_PIN 3 // Start/Stop button
 
 #define ARRAY_MAX_LEN 200 // Maximum length of Time interval array
+#define STEPS_PER_REV 200
 #define FULL_STEPS_PER_INTERVAL 10
 
 typedef enum {ARCHIMEDEAN, LINEAR} functions_t;
@@ -23,14 +24,14 @@ typedef enum {FULL, HALF, QUARTER, EIGHTH, SIXTEENTH} step_mode_t;
 void button_ISR();
 
 // Functions
-size_t create_table(functions_t);
+size_t create_table(functions_t, step_mode_t);
 void init_ports();
 void step();
 void wait_to_start();
 void config_step_mode(step_mode_t);
 
 // TODO: get rid of global variables
-const int steps_per_rev = 200;
+
 const int mm_per_rev = 1;
 
 int microsteps = 1; 
@@ -38,7 +39,6 @@ int microsteps = 1;
 
 // Global variables accesible from ISR
 volatile bool must_stop = false;
-
 long unsigned timeTable[ARRAY_MAX_LEN]; 
 long unsigned initial_time; // [us]
 
@@ -48,13 +48,13 @@ void setup() {
     // Set input and output ports
     init_ports();
     // Configurate stepper
-    config_step_mode(FULL); // Updates microsteps
-    byte stepperDirection = HIGH; 
+    config_step_mode(QUARTER); // Updates microsteps
+    byte stepperDirection = LOW; 
     digitalWrite(DIRECTION_PIN, stepperDirection);
 
     size_t steps_per_interval = FULL_STEPS_PER_INTERVAL * microsteps;
-    size_t table_size = create_table(ARCHIMEDEAN);
-    
+    size_t table_size = create_table(ARCHIMEDEAN, FULL);
+    size_t n_loops = 0;
     // Auxiliar variables
     
     long unsigned step_delay; // Delay between steps[us]
@@ -73,7 +73,7 @@ void setup() {
 
     initial_time = micros();
     // DEBUG PARTE RAPIDA
-    i = ARRAY_MAX_LEN - 10; 
+    //i = ARRAY_MAX_LEN - 10; 
     while (must_stop == false) {
 
         // DEBUG LINEAR
@@ -96,7 +96,6 @@ void setup() {
                 step();
                 taken_steps++;
                 time_to_move += step_delay;
-                //Serial.println("paso");
             }                
         }
         t_last_interval += timeTable[i]; // TODO: check overflow
@@ -111,13 +110,19 @@ void setup() {
             digitalWrite(DIRECTION_PIN, stepperDirection);
             i_sign = -i_sign;
             i = i + i_sign;
+
+            n_loops++;
+            
         } 
         // If index exceeds max index value, then index direction has to be changed
         else if (i >= (int)table_size) {
             i_sign = -i_sign;
             i = i + i_sign;
-            must_stop = true; // DEBUG
-        } 
+            //must_stop = true; // DEBUG
+            n_loops++;
+        }
+        if (n_loops == 2)
+                must_stop = true; 
     }
 
     Serial.println("Stopped.");
@@ -127,22 +132,44 @@ void loop() {
 }
 
 // Calculates time table in micro seconds
-size_t create_table(functions_t f) {
+size_t create_table(functions_t f, step_mode_t mode) {
     if (f == ARCHIMEDEAN) {
         long X0_measured = 10; // [mm]
-        long X_min = 1; // Ingresado a mano
-        float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / steps_per_rev; // [mm] Distance
+        long X_min = 9.85; // Ingresado a mano
+        float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / STEPS_PER_REV; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
-        
+        size_t i_limit;
         // Parameters of the function
         float a = 0.9489;
         float b = 0.6709;
         float F = 10;
-        size_t i;   
+        size_t i;
+
+        long min_delay;   
 
         for(i = 1; i <= length; i++) {
             timeTable[i-1] = (PI/a/b/F * (pow(X0,2)-pow(X0-dx*i,2)) - PI/a/b/F * (pow(X0,2)-pow(X0-dx*(i-1),2)))*1000000; // [s]
+        }
+
+        // Max velocity control
+        i_limit = floor((X_min * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
+
+        // TODO: error control
+        if (i_limit >= length) {
+            Serial.println("Error: array limit out of reach.");
+        }
+        Serial.print("i_limit is: ");
+        Serial.println(i_limit);
+        // HARDCODEO
+
+        if (mode == FULL) 
+            min_delay = 700; // Micros
+        else if (mode == QUARTER)
+            min_delay = 110;
+
+        for (i = i_limit; i < length; i++) {
+            timeTable[i] = min_delay *microsteps* FULL_STEPS_PER_INTERVAL;
         }
         return length;
     }
