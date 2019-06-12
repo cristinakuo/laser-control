@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <math.h>
+#include "motor.hpp"
 
 #define BAUDRATE 9600 // Serial communication
 
@@ -18,7 +19,6 @@
 #define FULL_STEPS_PER_INTERVAL 10
 
 typedef enum {ARCHIMEDEAN, LINEAR} functions_t;
-typedef enum {FULL, HALF, QUARTER, EIGHTH, SIXTEENTH} step_mode_t;
 
 // Interrupt Services
 void button_ISR();
@@ -40,7 +40,8 @@ int microsteps = 1;
 
 // Global variables accesible from ISR
 volatile bool must_stop = false;
-long unsigned timeTable[ARRAY_MAX_LEN]; 
+long unsigned timeTable[ARRAY_MAX_LEN];
+size_t table_size; // TODO: ver que onda cuando haya otra tabla 
 long unsigned initial_time; // [us]
 
 void setup() {
@@ -49,158 +50,27 @@ void setup() {
     // Set input and output ports
     init_ports();
     // Configurate stepper
-    config_step_mode(EIGHTH); // Updates microsteps. TODO: This might be part of a class
-    byte stepperDirection = HIGH; 
-    digitalWrite(DIRECTION_PIN, stepperDirection);
+    //config_step_mode(EIGHTH); // Updates microsteps. TODO: This might be part of a class
+    motor carrito(STEP_PIN, DIRECTION_PIN, 
+			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
+            EIGHTH,
+            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+    carrito.setDirection(LOW);
 
-    size_t steps_per_interval = FULL_STEPS_PER_INTERVAL * microsteps;
-    size_t table_size = create_table(ARCHIMEDEAN, FULL);
-    size_t n_loops = 0;
-    // Auxiliar variables
-    
-    long unsigned step_delay; // Delay between steps[us]
-    long unsigned time_to_move; // [us]
-    size_t taken_steps; // Counts steps taken within an interval
-    int i = 0; // Index for time array
-    int i_sign = 1; // It's either 1 or -1
-    long unsigned t_last_interval = 0;
+    table_size = create_table(ARCHIMEDEAN, FULL);
 
     // Stop program if button is hit 
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
-
+    
     initial_time = micros();
-
-    // Esto supuestamente va adentro de la funcion "CheckMatrix"
-    // Inicializamos el primero
-    step_delay = floor((float)timeTable[i] / (float) steps_per_interval);
-    Serial.println(micros()-initial_time); // DEBUG  
-    time_to_move = step_delay;
-    taken_steps = 0;
+    carrito.init();
     // Loop
     while(must_stop == false) {
-        if ( micros()-initial_time-t_last_interval >= time_to_move ) {                
-                step();
-                taken_steps++;
-                time_to_move += step_delay;
-        }
-        // Si alcanzo la cantidad de pasos de un intervalo
-        if (taken_steps >= steps_per_interval) {
-            Serial.println(micros()-initial_time); // DEBUG  
-            t_last_interval += timeTable[i]; // TODO: check overflow
-            i = i + i_sign;
-
-            // Check i
-            if (i < 0) {
-                stepperDirection = (stepperDirection == HIGH) ? LOW : HIGH;
-                digitalWrite(DIRECTION_PIN, stepperDirection);
-                i_sign = -i_sign;
-                i = i + i_sign;
-
-                n_loops++;
-            
-            } 
-            // If index exceeds max index value, then index direction has to be changed
-            else if (i >= (int)table_size) {
-                i_sign = -i_sign;
-                i = i + i_sign;
-                //must_stop = true; // DEBUG
-                n_loops++;
-            }
-            if (n_loops == 2)
-                    must_stop = true; 
-            step_delay = floor((float)timeTable[i] / (float) steps_per_interval);
-            taken_steps = 0;
-            time_to_move = step_delay;
-        }
+        carrito.move();
     }
 
     Serial.println("Stopped.");
 }
-void setup2() {
-    // Init serial communication
-    Serial.begin(BAUDRATE);
-    // Set input and output ports
-    init_ports();
-    // Configurate stepper
-    config_step_mode(QUARTER); // Updates microsteps
-    byte stepperDirection = LOW; 
-    digitalWrite(DIRECTION_PIN, stepperDirection);
-
-    size_t steps_per_interval = FULL_STEPS_PER_INTERVAL * microsteps;
-    size_t table_size = create_table(ARCHIMEDEAN, FULL);
-    size_t n_loops = 0;
-    // Auxiliar variables
-    
-    long unsigned step_delay; // Delay between steps[us]
-    long unsigned time_to_move; // [us]
-    size_t taken_steps; // Counts steps taken within an interval
-    int i = 0; // Index for time array
-    int i_sign = 1; // It's either 1 or -1
-    long unsigned t_last_interval = 0;
-    // Wait for button to be hit
-    //   wait_to_start();
-
-    // Increase counter when speed sensor pin goes High
-  	//attachInterrupt(digitalPinToInterrupt(SENSOR_PIN), printTime_ISR,CHANGE);
-    // Stop program if button is hit 
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING); 
-
-    initial_time = micros();
-    // DEBUG PARTE RAPIDA
-    //i = ARRAY_MAX_LEN - 10; 
-    while (must_stop == false) {
-
-        // DEBUG LINEAR
-        //digitalWrite(DIRECTION_PIN, HIGH);
-        //for (i=0;i<table_size*steps_per_interval;i++) {
-        //    step();
-        //    delayMicroseconds(1600);    
-        //}
-        //must_stop = true;
-        //continue; // DEBUG
-
-        step_delay = floor((float)timeTable[i] / (float) steps_per_interval);
-        Serial.println(micros()-initial_time); // DEBUG  
-        time_to_move = step_delay;
-        taken_steps = 0;
-        
-        while (taken_steps < steps_per_interval) {                
-            
-            if ( micros()-initial_time-t_last_interval >= time_to_move ) {                
-                step();
-                taken_steps++;
-                time_to_move += step_delay;
-            }                
-        }
-        t_last_interval += timeTable[i]; // TODO: check overflow
-  
-        i = i + i_sign;
-
-        // If index is zero, then direction of motor has to be changed
-        // and also direction of index.
-
-        if (i < 0) {
-            stepperDirection = (stepperDirection == HIGH) ? LOW : HIGH;
-            digitalWrite(DIRECTION_PIN, stepperDirection);
-            i_sign = -i_sign;
-            i = i + i_sign;
-
-            n_loops++;
-            
-        } 
-        // If index exceeds max index value, then index direction has to be changed
-        else if (i >= (int)table_size) {
-            i_sign = -i_sign;
-            i = i + i_sign;
-            //must_stop = true; // DEBUG
-            n_loops++;
-        }
-        if (n_loops == 2)
-                must_stop = true; 
-    }
-
-    Serial.println("Stopped.");
-}   
 
 void loop() {
 }
@@ -219,6 +89,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
         float b = 0.6709;
         float F = 10;
         size_t i;
+        int microsteps;
 
         long min_delay;   
 
@@ -237,13 +108,30 @@ size_t create_table(functions_t f, step_mode_t mode) {
         Serial.println(i_limit);
         // HARDCODEO
 
-        if (mode == FULL) 
+        if (mode == FULL) {
             min_delay = 700; // Micros
-        else if (mode == QUARTER)
+            microsteps = 1;
+        }
+        else if (mode == HALF) {
+            min_delay = 230;
+            microsteps = 2;
+        }
+        else if (mode == QUARTER) {
             min_delay = 110;
-
+            microsteps = 4;
+        }
+        else if (mode == EIGHTH) {
+            min_delay = 60;
+            microsteps = 8;
+        }
+        else if (mode == SIXTEENTH) {
+            min_delay = 20;
+            microsteps = 16;
+        }
+            
+        // Write in table
         for (i = i_limit; i < length; i++) {
-            timeTable[i] = min_delay *microsteps* FULL_STEPS_PER_INTERVAL;
+            timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
         }
         return length;
     }
