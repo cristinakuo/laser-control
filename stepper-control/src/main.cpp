@@ -25,20 +25,11 @@ void button_ISR();
 
 // Functions
 size_t create_table(functions_t, step_mode_t);
-void init_ports();
-void step();
 void wait_to_start();
-void config_step_mode(step_mode_t);
-void check_motor(); // TODO: Probably this will have to become part of a class
-void setup2(); // TEMP
-// TODO: get rid of global variables
 
 const int mm_per_rev = 1;
 
-int microsteps = 1; 
-
-
-// Global variables accesible from ISR
+// Global variables 
 volatile bool must_stop = false;
 long unsigned timeTable[ARRAY_MAX_LEN];
 size_t table_size; // TODO: ver que onda cuando haya otra tabla 
@@ -47,28 +38,28 @@ long unsigned initial_time; // [us]
 void setup() {
 	// Init serial communication
     Serial.begin(BAUDRATE);
-    // Set input and output ports
-    init_ports();
-    // Configurate stepper
-    //config_step_mode(EIGHTH); // Updates microsteps. TODO: This might be part of a class
-    motor carrito(STEP_PIN, DIRECTION_PIN, 
-			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
-            EIGHTH,
-            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    carrito.setDirection(HIGH);
-
-    table_size = create_table(ARCHIMEDEAN, FULL);
 
     // Stop program if button is hit 
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
     
+    // Set input and output ports
+    pinMode(BUTTON_PIN, INPUT);
+    // Configurate stepper
+
+    motor carrito(STEP_PIN, DIRECTION_PIN, 
+			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
+            HALF,
+            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+    carrito.setDirection(LOW);
+
+    table_size = create_table(ARCHIMEDEAN, FULL);
+
     initial_time = micros();
     carrito.init();
     // Loop
     while(must_stop == false) {
         carrito.move();
     }
-
     Serial.println("Stopped.");
 }
 
@@ -89,7 +80,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
         float b = 0.6709;
         float F = 10;
         size_t i;
-        int microsteps = 1;
+        int microsteps = 2;
         long min_delay = 700;   
 
         for(i = 1; i <= length; i++) {
@@ -109,23 +100,23 @@ size_t create_table(functions_t f, step_mode_t mode) {
 
         if (mode == FULL) {
             min_delay = 700; // Micros
-            microsteps = 1;
+            //microsteps = 1;
         }
         else if (mode == HALF) {
             min_delay = 230;
-            microsteps = 2;
+           // microsteps = 2;
         }
         else if (mode == QUARTER) {
             min_delay = 110;
-            microsteps = 4;
+            //microsteps = 4;
         }
         else if (mode == EIGHTH) {
             min_delay = 60;
-            microsteps = 8;
+            //microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
             min_delay = 20;
-            microsteps = 16;
+           // microsteps = 16;
         }
             
         // Write in table
@@ -144,27 +135,6 @@ size_t create_table(functions_t f, step_mode_t mode) {
         return 1;
 }
 
-void init_ports() {
-    // Stepper pins
-    pinMode(DIRECTION_PIN, OUTPUT);
-    pinMode(STEP_PIN, OUTPUT);
-    pinMode(LENSE_MS1_PIN, OUTPUT);
-    pinMode(LENSE_MS2_PIN, OUTPUT);
-    pinMode(LENSE_MS3_PIN, OUTPUT);
-
-    // Start/Stop button
-    pinMode(BUTTON_PIN, INPUT);
-
-    // Speed sensor
-    //pinMode(SENSOR_PIN, INPUT);
-}
-
-void step() {
-    digitalWrite(STEP_PIN, HIGH);
-    delayMicroseconds(5); // Probably unnecesary because delay in digital Write is pretty long
-    digitalWrite(STEP_PIN, LOW);
-}
-
 // TODO: Fix
 // Loop until button is hit
 void wait_to_start() {
@@ -174,45 +144,4 @@ void wait_to_start() {
 
 void button_ISR() {
     must_stop = true;
-}
-
-void config_step_mode(step_mode_t mode) {
-    byte pin1_state;
-    byte pin2_state;
-    byte pin3_state;
-    switch (mode) {
-        case FULL:
-            pin1_state = LOW;
-            pin2_state = LOW;
-            pin3_state = LOW;
-            microsteps = 1; // TODO: todavia no entra en efecto
-            break;
-        case HALF:
-            pin1_state = HIGH;
-            pin2_state = LOW;
-            pin3_state = LOW;
-            microsteps = 2;
-            break;
-        case QUARTER:
-            pin1_state = LOW;
-            pin2_state = HIGH;
-            pin3_state = LOW;
-            microsteps = 4;
-            break;
-        case EIGHTH:
-            pin1_state = HIGH;
-            pin2_state = HIGH;
-            pin3_state = LOW;
-            microsteps = 8;
-            break;
-        case SIXTEENTH:
-            pin1_state = HIGH;
-            pin2_state = HIGH;
-            pin3_state = HIGH;
-            microsteps = 16;
-            break;
-    }
-    digitalWrite(LENSE_MS1_PIN, pin1_state);
-    digitalWrite(LENSE_MS2_PIN, pin2_state);
-    digitalWrite(LENSE_MS3_PIN, pin3_state);      
 }

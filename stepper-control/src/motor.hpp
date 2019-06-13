@@ -32,7 +32,7 @@ private:
 	byte _MS3Pin; 
 	size_t _stepsPerRevolution;
     int i; // Table
-    int i_sign;
+    int i_sign; // Table
 
     long unsigned _timeToMove;
     long unsigned _stepDelay;

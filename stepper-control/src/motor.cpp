@@ -100,22 +100,20 @@ void motor::move() {
         _timeToMove += _stepDelay; 
     }
 
+    // Change interval
     if (_takenStepsInInterval >= _stepsPerInterval) {
         _timeLastInterval += timeTable[i];
         i = i + i_sign;
 
-        // Check i
+        // Check end of array
         if (i < 0) {
             if (digitalRead(_directionPin) == HIGH)
                 digitalWrite(_directionPin,LOW);
             else
                 digitalWrite(_directionPin,HIGH);
-
             i_sign = -i_sign;
             i = i + i_sign;
-            _nRounds++;
-
-        
+            _nRounds++;  
         } 
         // If index exceeds max index value, then index direction has to be changed
         else if (i >= (int)table_size) {
@@ -123,9 +121,9 @@ void motor::move() {
             i = i + i_sign;
             _nRounds++;
         }
-
         if (_nRounds == 2)
             must_stop = true;
+            
         // Reasignar parametros
         _stepDelay = floor((float)timeTable[i] / (float) _stepsPerInterval);
         _takenStepsInInterval = 0;
