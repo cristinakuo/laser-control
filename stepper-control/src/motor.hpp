@@ -5,6 +5,7 @@
 extern long unsigned initial_time;
 extern long unsigned timeTable[200];
 extern size_t table_size;
+extern volatile bool must_stop;
 
 typedef enum {FULL, HALF, QUARTER, EIGHTH, SIXTEENTH} step_mode_t;
 
@@ -38,6 +39,7 @@ private:
     long unsigned _timeLastInterval;
     size_t _takenStepsInInterval;
     size_t _stepsPerInterval;
+    size_t _nRounds; // DEBUG
 
 };
 

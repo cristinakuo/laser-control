@@ -55,7 +55,7 @@ void setup() {
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
             EIGHTH,
             STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    carrito.setDirection(LOW);
+    carrito.setDirection(HIGH);
 
     table_size = create_table(ARCHIMEDEAN, FULL);
 
@@ -89,9 +89,8 @@ size_t create_table(functions_t f, step_mode_t mode) {
         float b = 0.6709;
         float F = 10;
         size_t i;
-        int microsteps;
-
-        long min_delay;   
+        int microsteps = 1;
+        long min_delay = 700;   
 
         for(i = 1; i <= length; i++) {
             timeTable[i-1] = (PI/a/b/F * (pow(X0,2)-pow(X0-dx*i,2)) - PI/a/b/F * (pow(X0,2)-pow(X0-dx*(i-1),2)))*1000000; // [s]
@@ -132,7 +131,9 @@ size_t create_table(functions_t f, step_mode_t mode) {
         // Write in table
         for (i = i_limit; i < length; i++) {
             timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
+            Serial.println(timeTable[i]);
         }
+        Serial.println("end time table");
         return length;
     }
     else if (f == LINEAR) {
