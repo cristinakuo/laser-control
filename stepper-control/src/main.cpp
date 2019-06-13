@@ -48,7 +48,7 @@ void setup() {
     // Set input and output ports
     init_ports();
     // Configurate stepper
-    config_step_mode(QUARTER); // Updates microsteps
+    config_step_mode(SIXTEENTH); // Updates microsteps
     byte stepperDirection = LOW; 
     digitalWrite(DIRECTION_PIN, stepperDirection);
 
