@@ -45,14 +45,16 @@ void setup() {
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
-
+    step_mode_t chosenMode = EIGHTH;
+    byte chosenDir = LOW;
+    
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
-            HALF,
+            chosenMode,
             STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    carrito.setDirection(LOW);
+    carrito.setDirection(chosenDir);
 
-    table_size = create_table(ARCHIMEDEAN, FULL);
+    table_size = create_table(ARCHIMEDEAN, chosenMode);
 
     initial_time = micros();
     carrito.init();
@@ -70,7 +72,7 @@ void loop() {
 size_t create_table(functions_t f, step_mode_t mode) {
     if (f == ARCHIMEDEAN) {
         long X0_measured = 10; // [mm]
-        long X_min = 9.85; // Ingresado a mano
+        long X_min = 2;
         float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / STEPS_PER_REV; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
@@ -80,7 +82,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
         float b = 0.6709;
         float F = 10;
         size_t i;
-        int microsteps = 2;
+        int microsteps = 1;
         long min_delay = 700;   
 
         for(i = 1; i <= length; i++) {
@@ -88,11 +90,12 @@ size_t create_table(functions_t f, step_mode_t mode) {
         }
 
         // Max velocity control
-        i_limit = floor((X_min * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
+        i_limit = floor(((X0_measured - X_min) * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
 
         // TODO: error control
         if (i_limit >= length) {
             Serial.println("Error: array limit out of reach.");
+            
         }
         Serial.print("i_limit is: ");
         Serial.println(i_limit);
@@ -100,28 +103,31 @@ size_t create_table(functions_t f, step_mode_t mode) {
 
         if (mode == FULL) {
             min_delay = 700; // Micros
-            //microsteps = 1;
+            microsteps = 1;
         }
         else if (mode == HALF) {
-            min_delay = 230;
-           // microsteps = 2;
+            min_delay = 700;
+            microsteps = 2;
         }
         else if (mode == QUARTER) {
-            min_delay = 110;
-            //microsteps = 4;
+            min_delay = 700;
+            microsteps = 4;
         }
         else if (mode == EIGHTH) {
-            min_delay = 60;
-            //microsteps = 8;
+            min_delay = 150;
+            microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
-            min_delay = 20;
-           // microsteps = 16;
+            min_delay = 700;
+            microsteps = 16;
         }
             
         // Write in table
         for (i = i_limit; i < length; i++) {
             timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
+        }
+        //DEBUG
+        for (i = 0; i < length; i++) {
             Serial.println(timeTable[i]);
         }
         Serial.println("end time table");
