@@ -45,14 +45,16 @@ void setup() {
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
-    step_mode_t chosenMode = EIGHTH;
-    byte chosenDir = LOW;
+    step_mode_t chosenMode = SIXTEENTH;
+    byte chosenDir = HIGH;
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
             chosenMode,
             STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
     carrito.setDirection(chosenDir);
+    // DEBUG
+    digitalWrite(DIRECTION_PIN, HIGH);
 
     table_size = create_table(ARCHIMEDEAN, chosenMode);
 
@@ -72,7 +74,7 @@ void loop() {
 size_t create_table(functions_t f, step_mode_t mode) {
     if (f == ARCHIMEDEAN) {
         long X0_measured = 10; // [mm]
-        long X_min = 2;
+        long X_min = 1;
         float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / STEPS_PER_REV; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
@@ -118,7 +120,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
             microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
-            min_delay = 700;
+            min_delay = 75;
             microsteps = 16;
         }
             
