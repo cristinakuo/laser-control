@@ -5,14 +5,21 @@
 #define BAUDRATE 9600 // Serial communication
 
 // Stepper pins
-#define DIRECTION_PIN 8
-#define STEP_PIN 9
-#define LENSE_MS1_PIN 7
-#define LENSE_MS2_PIN 6
-#define LENSE_MS3_PIN 5
+#define DIRECTION_PIN 25
+#define STEP_PIN 24
+#define LENSE_MS1_PIN 50 // DEBUG: En realidad no sirven para nada
+#define LENSE_MS2_PIN 51
+#define LENSE_MS3_PIN 52
+
+// Target stepper pins
+#define TARGET_DIRECTION_PIN 27
+#define TARGET_STEP_PIN 26
+#define TARGET_MS1_PIN 50 // DEBUG: En realidad no sirven para nada
+#define TARGET_MS2_PIN 51
+#define TARGET_MS3_PIN 52
 
 // Interrupt pins
-#define BUTTON_PIN 3 // Start/Stop button
+#define BUTTON_PIN 2 // Start/Stop button
 
 #define ARRAY_MAX_LEN 200 // Maximum length of Time interval array
 #define STEPS_PER_REV 200
@@ -39,30 +46,39 @@ void setup() {
 	// Init serial communication
     Serial.begin(BAUDRATE);
 
-    // Stop program if button is hit 
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
-    
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
-    step_mode_t chosenMode = SIXTEENTH;
-    byte chosenDir = HIGH;
+    step_mode_t chosenMode = EIGHTH;
+    byte chosenDir = LOW;
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
             chosenMode,
             STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    carrito.setDirection(chosenDir);
-    // DEBUG
-    digitalWrite(DIRECTION_PIN, HIGH);
+    carrito.isCarrito = true;
 
+    motor target(TARGET_STEP_PIN, TARGET_DIRECTION_PIN, 
+			TARGET_MS1_PIN, TARGET_MS2_PIN, TARGET_MS3_PIN,
+            chosenMode,
+            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+    target.isCarrito = false;
+
+    target.setDirection(chosenDir);
+    carrito.setDirection(chosenDir);
+    
     table_size = create_table(ARCHIMEDEAN, chosenMode);
 
+    wait_to_start();
+    // Stop program if button is hit 
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
     initial_time = micros();
     carrito.init();
+    target.init();
     // Loop
     while(must_stop == false) {
         carrito.move();
+        target.move();
     }
     Serial.println("Stopped.");
 }
@@ -146,8 +162,10 @@ size_t create_table(functions_t f, step_mode_t mode) {
 // TODO: Fix
 // Loop until button is hit
 void wait_to_start() {
+    Serial.println("Press button to start:");
     while (digitalRead(BUTTON_PIN) == LOW) {};
-    delay(1000); // Wait for stability in electrical signal
+    delay(500); // Wait for stability in electrical signal
+    Serial.println("Starting...");
 }
 
 void button_ISR() {

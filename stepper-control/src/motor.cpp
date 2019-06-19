@@ -26,8 +26,6 @@ motor::motor(const byte step_pin, const byte direction_pin,
     i = 0;
     i_sign = 1;
     _stepsPerInterval = _fullStepsPerInterval * _microsteps; // OJO: declarar despues de settear el step mode
-    Serial.print("Steps per interval is: ");
-    Serial.println(_stepsPerInterval);
     _takenStepsInInterval = 0;
     _timeLastInterval = 0;
 }
@@ -86,7 +84,8 @@ void motor::setDirection(const byte direction) {
 
 void motor::init() {
     _stepDelay = floor((float)timeTable[i] / (float) _stepsPerInterval);
-    Serial.println(micros()-initial_time); // DEBUG  
+    if (isCarrito == true)
+        Serial.println(micros()-initial_time); // DEBUG  
     _timeToMove = _stepDelay;
     _takenStepsInInterval = 0;
     _nRounds = 0; // DEBUG
@@ -128,8 +127,7 @@ void motor::move() {
         _stepDelay = floor((float)timeTable[i] / (float) _stepsPerInterval);
         _takenStepsInInterval = 0;
         _timeToMove = _stepDelay;
-        Serial.println(micros()-initial_time); // DEBUG  
-        //Serial.print(" ");
-        //Serial.println(_stepDelay);
+        if (isCarrito == true)
+            Serial.println(micros()-initial_time); // DEBUG  
     } 
 }

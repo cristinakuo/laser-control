@@ -4,7 +4,7 @@ import time
 import argparse
 
 BAUDRATE = 9600
-COMPORT_MOTORS = 'COM9'
+COMPORT_MOTORS = 'COM12'
 COMPORT_SENSOR = 'COM6' # TODO: Ver cual es 
 SENSOR_FILE_DEFAULT = 'sensor_output.txt'
 MOTOR_FILE_DEFAULT = 'motor_output.txt'

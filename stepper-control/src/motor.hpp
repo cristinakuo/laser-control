@@ -21,6 +21,8 @@ public:
     void setDirection(const byte direction);
     void move();
     void init();
+
+    bool isCarrito; // DEBUG
 	
 private:
     size_t _microsteps;
