@@ -47,7 +47,7 @@ void button_ISR();
 // Functions
 size_t create_table(functions_t, step_mode_t);
 void wait_to_start();
-
+void initial_menu();
 const int mm_per_rev = 1;
 
 // Global variables 
@@ -77,7 +77,7 @@ void setup() {
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
     step_mode_t chosenMode = EIGHTH;
-    byte chosenDir = LOW;
+    byte chosenDir = HIGH;
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
@@ -96,7 +96,8 @@ void setup() {
     
     table_size = create_table(ARCHIMEDEAN, chosenMode);
 
-    wait_to_start();
+    initial_menu();
+    //wait_to_start();
     // Stop program if button is hit 
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
 
@@ -104,9 +105,11 @@ void setup() {
     carrito.init();
     target.init();
     // Loop
-    while(must_stop == false) {
+    char stopkey = '0';
+    while(stopkey != '*') {
         carrito.move();
         target.move();
+        stopkey = customKeypad.getKey();
     }
     Serial.println("Stopped.");
 }
@@ -143,8 +146,8 @@ size_t create_table(functions_t f, step_mode_t mode) {
             Serial.println("Error: array limit out of reach.");
             
         }
-        Serial.print("i_limit is: ");
-        Serial.println(i_limit);
+        //Serial.print("i_limit is: ");
+        //Serial.println(i_limit);
         // HARDCODEO
 
         if (mode == FULL) {
@@ -173,10 +176,10 @@ size_t create_table(functions_t f, step_mode_t mode) {
             timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
         }
         //DEBUG
-        for (i = 0; i < length; i++) {
-            Serial.println(timeTable[i]);
-        }
-        Serial.println("end time table");
+        //for (i = 0; i < length; i++) {
+        //    Serial.println(timeTable[i]);
+        //}
+       // Serial.println("end time table");
         return length;
     }
     else if (f == LINEAR) {
@@ -198,4 +201,21 @@ void wait_to_start() {
 
 void button_ISR() {
     must_stop = true;
+}
+
+// TODO: design a good structure
+void initial_menu() {
+    char opt_function;
+    char button = '1';
+    Serial.println("Enter desired function: 1- Arquimedes 2- Linear");
+    opt_function = customKeypad.waitForKey();
+    Serial.print("You've chosen ");
+    Serial.println(opt_function);
+
+    Serial.println("Press 0 to start:");
+    while(button!='0') {
+        button = customKeypad.getKey();
+    }
+    Serial.println("Starting..."); 
+
 }
