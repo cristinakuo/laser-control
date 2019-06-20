@@ -1,1 +1,4 @@
 .vscode
+results/
+graph_result.m
+plotter.py
