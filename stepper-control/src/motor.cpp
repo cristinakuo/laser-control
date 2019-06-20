@@ -93,6 +93,7 @@ void motor::init() {
 
 void motor::move() {
     
+    // Checks if it's time to move.
     if (micros()-initial_time-_timeLastInterval >= _timeToMove) {
         step();
         _takenStepsInInterval++;
