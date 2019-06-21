@@ -2,7 +2,7 @@
 #include <math.h>
 #include "Keypad.h"
 #include "motor.hpp"
-
+#include "LiquidCrystal.h"
 #define BAUDRATE 9600 // Serial communication
 
 // Stepper pins
@@ -77,9 +77,9 @@ void setup() {
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
     step_mode_t chosenMode = EIGHTH;
-    functions_t chosenFunction;
+    //functions_t chosenFunction;
     byte chosenDir = HIGH;
-    chosenFunction = initial_menu();
+    initial_menu();
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
@@ -195,6 +195,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
 // TODO: Fix
 // Loop until button is hit
 void wait_to_start() {
+    char button = '1';
     Serial.println("Press 0 to start:");
     while(button!='0') {
         button = customKeypad.getKey();
@@ -210,7 +211,7 @@ void button_ISR() {
 int initial_menu() {
     char aux;
     int opt_function;
-    char button = '1';
+    
     // Funcion deseada
     Serial.println("Enter desired function: 1- Arquimedes 2- Linear");
     aux = customKeypad.waitForKey(); 
@@ -218,4 +219,5 @@ int initial_menu() {
     Serial.print("You've chosen "); 
     Serial.println(opt_function);
 
+    return opt_function;
 }
