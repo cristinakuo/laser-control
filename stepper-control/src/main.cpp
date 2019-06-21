@@ -47,7 +47,7 @@ void button_ISR();
 // Functions
 size_t create_table(functions_t, step_mode_t);
 void wait_to_start();
-void initial_menu();
+int initial_menu();
 const int mm_per_rev = 1;
 
 // Global variables 
@@ -77,7 +77,9 @@ void setup() {
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
     step_mode_t chosenMode = EIGHTH;
+    functions_t chosenFunction;
     byte chosenDir = HIGH;
+    chosenFunction = initial_menu();
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
 			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
@@ -94,10 +96,10 @@ void setup() {
     target.setDirection(chosenDir);
     carrito.setDirection(chosenDir);
     
-    table_size = create_table(ARCHIMEDEAN, chosenMode);
+    table_size = create_table(ARCHIMEDEAN, chosenMode); // TODO: cambiar a chosenFunction
 
-    initial_menu();
-    //wait_to_start();
+    
+    wait_to_start();
     // Stop program if button is hit 
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
 
@@ -193,10 +195,11 @@ size_t create_table(functions_t f, step_mode_t mode) {
 // TODO: Fix
 // Loop until button is hit
 void wait_to_start() {
-    Serial.println("Press button to start:");
-    while (digitalRead(BUTTON_PIN) == LOW) {};
-    delay(500); // Wait for stability in electrical signal
-    Serial.println("Starting...");
+    Serial.println("Press 0 to start:");
+    while(button!='0') {
+        button = customKeypad.getKey();
+    }
+    Serial.println("Starting..."); 
 }
 
 void button_ISR() {
@@ -204,18 +207,15 @@ void button_ISR() {
 }
 
 // TODO: design a good structure
-void initial_menu() {
-    char opt_function;
+int initial_menu() {
+    char aux;
+    int opt_function;
     char button = '1';
+    // Funcion deseada
     Serial.println("Enter desired function: 1- Arquimedes 2- Linear");
-    opt_function = customKeypad.waitForKey();
-    Serial.print("You've chosen ");
+    aux = customKeypad.waitForKey(); 
+    opt_function = aux - '0'; // TODO: devolver esto
+    Serial.print("You've chosen "); 
     Serial.println(opt_function);
-
-    Serial.println("Press 0 to start:");
-    while(button!='0') {
-        button = customKeypad.getKey();
-    }
-    Serial.println("Starting..."); 
 
 }
