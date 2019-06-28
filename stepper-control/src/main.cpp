@@ -3,6 +3,8 @@
 #include "Keypad.h"
 #include "motor.hpp"
 #include "LiquidCrystal.h"
+#include "menu.hpp"
+
 #define BAUDRATE 9600 // Serial communication
 
 // Stepper pins
