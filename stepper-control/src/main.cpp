@@ -86,6 +86,26 @@ void setup() {
 void loop() {
 }
 
+// Para la prueba 2
+//void loop() {
+//	bool thereIsInput = false;
+//	int myOpt;
+//
+//	mainMenu(my_menu, my_menu_list);
+//	
+//    while (thereIsInput != true) {
+//		if (Serial.available() > 0) {
+//			myOpt = Serial.read();
+//			myOpt = myOpt - 48;
+//			thereIsInput = true;
+//		}
+//		else 
+//			myOpt = 0;
+//	}
+//    
+//	menu_set_input(my_menu, myOpt);
+//}
+
 // Calculates time table in micro seconds
 size_t create_table(functions_t f, step_mode_t mode) {
     if (f == ARCHIMEDEAN) {
