@@ -4,6 +4,7 @@ void menu_init(menu_state_t &st) {
 	st.levels_options[0]=0;
 	st.levels_options[1]=0;
 	st.levels_options[2]=0;
+    st.has_opt = false;
 }
 
 void refresh(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
@@ -86,7 +87,12 @@ void execute_sub1sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEM
 
 void execute_sub2sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
 	Serial.println("This is Arquimedes:");
-	Serial.println("1. Go back"); 
+	Serial.println("1. Go back");
+
+    // TODO: agregar barrido
+    delay(1000);
+	st.has_opt = true;
+	st.input = 1; 
 }
 
 void execute_sub2sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {

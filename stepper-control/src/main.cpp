@@ -94,7 +94,12 @@ void loop() {
 //	mainMenu(my_menu, my_menu_list);
 //	
 //    while (thereIsInput != true) {
-//		if (Serial.available() > 0) {
+//		    if (my_menu.has_opt == true) {
+//                myOpt = my_menu.input;
+//                my_menu.has_opt = false;
+//                break;
+//          }
+//          if (Serial.available() > 0) {
 //			myOpt = Serial.read();
 //			myOpt = myOpt - 48;
 //			thereIsInput = true;

@@ -8,6 +8,7 @@ typedef struct {
 	int input;
 	int levels_options[NUM_LEVELS];
 	int level;
+    bool has_opt;
 } menu_state_t;
 
 typedef void (*menu_list_t)(menu_state_t &st);
