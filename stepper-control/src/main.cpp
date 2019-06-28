@@ -48,6 +48,8 @@ void button_ISR();
 size_t create_table(functions_t, step_mode_t);
 void wait_to_start();
 int initial_menu();
+void barrido(functions_t f);
+
 const int mm_per_rev = 1;
 
 // Global variables 
@@ -75,45 +77,8 @@ void setup() {
 
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
-    // Configurate stepper
-    step_mode_t chosenMode = EIGHTH;
-    //functions_t chosenFunction;
-    byte chosenDir = HIGH;
-    initial_menu();
     
-    motor carrito(STEP_PIN, DIRECTION_PIN, 
-			LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
-            chosenMode,
-            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    carrito.isCarrito = true;
-
-    motor target(TARGET_STEP_PIN, TARGET_DIRECTION_PIN, 
-			TARGET_MS1_PIN, TARGET_MS2_PIN, TARGET_MS3_PIN,
-            chosenMode,
-            STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
-    target.isCarrito = false;
-
-    target.setDirection(chosenDir);
-    carrito.setDirection(chosenDir);
-    
-    table_size = create_table(ARCHIMEDEAN, chosenMode); // TODO: cambiar a chosenFunction
-
-    
-    wait_to_start();
-    // Stop program if button is hit 
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
-
-    initial_time = micros();
-    carrito.init();
-    target.init();
-    // Loop
-    char stopkey = '0';
-    while(stopkey != '*') {
-        carrito.move();
-        target.move();
-        stopkey = customKeypad.getKey();
-    }
-    Serial.println("Stopped.");
+    barrido(ARCHIMEDEAN);
 }
 
 void loop() {
@@ -148,9 +113,6 @@ size_t create_table(functions_t f, step_mode_t mode) {
             Serial.println("Error: array limit out of reach.");
             
         }
-        //Serial.print("i_limit is: ");
-        //Serial.println(i_limit);
-        // HARDCODEO
 
         if (mode == FULL) {
             min_delay = 700; // Micros
@@ -177,11 +139,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
         for (i = i_limit; i < length; i++) {
             timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
         }
-        //DEBUG
-        //for (i = 0; i < length; i++) {
-        //    Serial.println(timeTable[i]);
-        //}
-       // Serial.println("end time table");
+
         return length;
     }
     else if (f == LINEAR) {
@@ -207,7 +165,7 @@ void button_ISR() {
     must_stop = true;
 }
 
-// TODO: design a good structure
+// TODO: eliminar porque ya no sirve
 int initial_menu() {
     char aux;
     int opt_function;
@@ -220,4 +178,42 @@ int initial_menu() {
     Serial.println(opt_function);
 
     return opt_function;
+}
+
+void barrido(functions_t func) {
+    
+    step_mode_t chosenMode = EIGHTH; // DEBUG: despues deberia ser const!
+    byte chosenDir = HIGH; // DEBUG: solo para cambiar facilmente en las pruebas
+    
+    // Configurate stepper
+    motor carrito(STEP_PIN, DIRECTION_PIN, LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
+            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+    carrito.isCarrito = true; // DEBUG: esto es harcodeado para imprimir
+
+    motor target(TARGET_STEP_PIN, TARGET_DIRECTION_PIN, TARGET_MS1_PIN, TARGET_MS2_PIN, TARGET_MS3_PIN,
+            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+    target.isCarrito = false; // DEBUG: esto es harcodeado
+
+    target.setDirection(chosenDir);
+    carrito.setDirection(chosenDir);
+    
+    // Creacion de la tabla
+    table_size = create_table(func, chosenMode);
+
+    // Teclado para empezar
+    wait_to_start();
+    // Stop program if button is hit 
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
+
+    initial_time = micros();
+    carrito.init();
+    target.init();
+    // Loop
+    char stopkey = '0';
+    while(stopkey != '*') {
+        carrito.move();
+        target.move();
+        stopkey = customKeypad.getKey();
+    }
+    Serial.println("Stopped.");
 }
