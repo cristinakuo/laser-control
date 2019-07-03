@@ -76,9 +76,10 @@ void setup() {
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
     // Configurate stepper
-    step_mode_t chosenMode = EIGHTH;
+    step_mode_t chosenMode = SIXTEENTH;
     //functions_t chosenFunction;
-    byte chosenDir = HIGH;
+    byte chosenDir = LOW;
+    
     initial_menu();
     
     motor carrito(STEP_PIN, DIRECTION_PIN, 
@@ -108,9 +109,9 @@ void setup() {
     target.init();
     // Loop
     char stopkey = '0';
-    while(stopkey != '*') {
+    while(stopkey != '*' and must_stop == false) {
         carrito.move();
-        target.move();
+        //target.move();
         stopkey = customKeypad.getKey();
     }
     Serial.println("Stopped.");
