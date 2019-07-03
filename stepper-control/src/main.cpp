@@ -78,7 +78,7 @@ void setup() {
     // Configurate stepper
     step_mode_t chosenMode = SIXTEENTH;
     //functions_t chosenFunction;
-    byte chosenDir = LOW;
+    byte chosenDir = HIGH;
     
     initial_menu();
     
@@ -111,7 +111,7 @@ void setup() {
     char stopkey = '0';
     while(stopkey != '*' and must_stop == false) {
         carrito.move();
-        //target.move();
+        target.move();
         stopkey = customKeypad.getKey();
     }
     Serial.println("Stopped.");
@@ -170,7 +170,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
             microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
-            min_delay = 75;
+            min_delay = 100; // Prueba
             microsteps = 16;
         }
             
