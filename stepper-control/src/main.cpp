@@ -159,7 +159,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
             microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
-            min_delay = 75;
+            min_delay = 100;
             microsteps = 16;
         }
             
@@ -210,8 +210,8 @@ int initial_menu() {
 
 void barrido(functions_t func) {
     
-    step_mode_t chosenMode = EIGHTH; // DEBUG: despues deberia ser const!
-    byte chosenDir = HIGH; // DEBUG: solo para cambiar facilmente en las pruebas
+    step_mode_t chosenMode = SIXTEENTH; // DEBUG: despues deberia ser const!
+    byte chosenDir = LOW; // DEBUG: solo para cambiar facilmente en las pruebas
     
     // Configurate stepper
     motor carrito(STEP_PIN, DIRECTION_PIN, LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
