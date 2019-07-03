@@ -80,6 +80,7 @@ void setup() {
     // Set input and output ports
     pinMode(BUTTON_PIN, INPUT);
     
+    wait_to_start();
     barrido(ARCHIMEDEAN);
 }
 
