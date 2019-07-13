@@ -103,22 +103,35 @@ size_t create_table(functions_t f, step_mode_t mode) {
 }
 
 void manual_control(step_mode_t mode) {
-    // Get input
+    
     char key_pressed;
     bool want_to_exit = false;
-    float distance_mm = 1; // [mm]
-    int N_steps = 200;
+    
+    // Initial values
+    float distance_mm = 1; // [mm] 
+    int N_steps = mm_to_steps(distance_mm);
     // Show in pantalla
     while(want_to_exit != true) {
         key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace
         if (key_pressed == 'A') {
             // edit distance
+            N_steps = get_distance();
         } else if (key_pressed == '1') {
             // go left
         } else if (key_pressed == '3') {
             // go right
         }
     }
+}
+
+
+int get_distance() {
+    char char_dist;
+    char_dist = customKeypad.waitForKey();
+
+    // TODO: VALIDAAAR
+    // TODO: hacer que pueda recibir dos digitos
+    return mm_to_steps(char_dist - '0');  
 }
 
 int mm_to_steps(float x_mm, motor the_motor) {

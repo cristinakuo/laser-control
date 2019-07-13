@@ -28,5 +28,6 @@ void wait_to_start(); // TODO: mover
 size_t create_table(functions_t, step_mode_t);
 
 int mm_to_steps(float);
+int get_distance();
  
 #endif
