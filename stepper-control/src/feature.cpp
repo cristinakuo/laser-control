@@ -12,9 +12,6 @@ void barrido(functions_t func) {
 
     // Teclado para empezar
     wait_to_start();
-    
-    // Stop program if button is hit 
-    //attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
 
     initial_time = micros();
     carrito.init();
@@ -29,7 +26,6 @@ void barrido(functions_t func) {
     Serial.println("Stopped.");
 }
 
-// TODO: Fix
 // Loop until button is hit
 void wait_to_start() {
     char button = '1';

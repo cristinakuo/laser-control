@@ -86,13 +86,11 @@ void execute_sub1sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEM
 
 void execute_sub2sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
 	Serial.println("This is Arquimedes:");
-	//Serial.println("1. Go back");
+	//Serial.println("Press * to go back");
 
-    // TODO: agregar barrido
     barrido(ARCHIMEDEAN);
-    delay(1000);
 	st.has_opt = true;
-	st.input = 1; 
+	st.input = 1;  // Vuelve automaticamente atras
 }
 
 void execute_sub2sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
