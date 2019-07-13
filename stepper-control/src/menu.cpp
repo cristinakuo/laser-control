@@ -198,19 +198,9 @@ void sub2sub2Menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
 
 
 void barrido(functions_t func) {
-    
-    step_mode_t chosenMode = SIXTEENTH; // DEBUG: despues deberia ser const!
-    byte chosenDir = LOW; // DEBUG: solo para cambiar facilmente en las pruebas
-    
-    // Configurate stepper
-    motor carrito(STEP_PIN, DIRECTION_PIN, LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
-            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
     carrito.isCarrito = true; // DEBUG: esto es harcodeado para imprimir
-
-    motor target(TARGET_STEP_PIN, TARGET_DIRECTION_PIN, TARGET_MS1_PIN, TARGET_MS2_PIN, TARGET_MS3_PIN,
-            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
     target.isCarrito = false; // DEBUG: esto es harcodeado
-
+    
     target.setDirection(chosenDir);
     carrito.setDirection(chosenDir);
     
@@ -219,8 +209,9 @@ void barrido(functions_t func) {
 
     // Teclado para empezar
     wait_to_start();
+    
     // Stop program if button is hit 
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
+    //attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_ISR, RISING);
 
     initial_time = micros();
     carrito.init();

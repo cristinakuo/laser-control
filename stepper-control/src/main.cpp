@@ -3,24 +3,10 @@
 #include "Keypad.h"
 #include "LiquidCrystal.h"
 #include "menu.hpp"
+#include "ports.hpp"
+#include "motor.hpp"
 
 #define BAUDRATE 9600 // Serial communication
-
-
-// Keypad
-#define KEYPAD_R1_PIN 53
-#define KEYPAD_R2_PIN 51
-#define KEYPAD_R3_PIN 49
-#define KEYPAD_R4_PIN 47
-#define KEYPAD_C1_PIN 45
-#define KEYPAD_C2_PIN 43
-#define KEYPAD_C3_PIN 41
-#define KEYPAD_C4_PIN 39
-
-#define KEYPAD_ROWS 4
-#define KEYPAD_COLS 4
-
-//typedef enum {ARCHIMEDEAN, LINEAR} functions_t;
 
 int initial_menu();
 
@@ -59,6 +45,18 @@ menu_list_t my_menu_list[NUM_MENU_ITEMS];
 
 //void loop() {
 //}
+
+// Configurate stepper
+step_mode_t chosenMode = SIXTEENTH; // DEBUG: despues deberia ser const!
+byte chosenDir = LOW; // DEBUG: solo para cambiar facilmente en las pruebas
+
+motor carrito(STEP_PIN, DIRECTION_PIN, LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
+            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+
+motor target(TARGET_STEP_PIN, TARGET_DIRECTION_PIN, TARGET_MS1_PIN, TARGET_MS2_PIN, TARGET_MS3_PIN,
+            chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);
+
+
 
 // Para la prueba 2
 void loop() {
