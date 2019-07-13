@@ -17,6 +17,7 @@ extern motor target;
 extern motor carrito;
 extern step_mode_t chosenMode;
 extern byte chosenDir;
+extern long unsigned initial_time;
 
 // Main features
 void barrido(functions_t func);
