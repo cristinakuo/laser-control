@@ -38,6 +38,7 @@ void motor::setStepMode(const step_mode_t mode) {
         digitalWrite(_MS3Pin, LOW);
         _stepsPerRevolution = 200;
         _microsteps = 1;
+        _minDelay = 700;
     }
     else if (mode == HALF) {
         digitalWrite(_MS1Pin, HIGH);
@@ -45,6 +46,7 @@ void motor::setStepMode(const step_mode_t mode) {
         digitalWrite(_MS3Pin, LOW);
         _stepsPerRevolution = 400;
         _microsteps = 2;
+        _minDelay = 700;
     }
     else if (mode == QUARTER) {
         digitalWrite(_MS1Pin, LOW);
@@ -52,20 +54,23 @@ void motor::setStepMode(const step_mode_t mode) {
         digitalWrite(_MS3Pin, LOW);
         _stepsPerRevolution = 800;
         _microsteps = 4;
+        _minDelay = 700;
     }
     else if (mode == EIGHTH) {
         digitalWrite(_MS1Pin, HIGH);
         digitalWrite(_MS2Pin, HIGH);
         digitalWrite(_MS3Pin, LOW);
         _stepsPerRevolution = 1600;
-        _microsteps = 8;   
+        _microsteps = 8;  
+        _minDelay = 150; 
     }
     else if (mode == SIXTEENTH) {
         digitalWrite(_MS1Pin, HIGH);
         digitalWrite(_MS2Pin, HIGH);
         digitalWrite(_MS3Pin, HIGH);
         _stepsPerRevolution = 3200;
-        _microsteps = 16;  
+        _microsteps = 16; 
+        _minDelay = 100; 
     }
 }
 
@@ -76,6 +81,14 @@ void motor::step() const {
     digitalWrite(_stepPin, HIGH);
     delayMicroseconds(5); // Probably unnecesary because delay in digital Write is pretty long
     digitalWrite(_stepPin, LOW);
+}
+
+void motor::step(int N) const {
+    int i;
+    for (i = 0; i < N; i++) {
+        step();
+        delayMicroseconds(_minDelay);
+    }
 }
 
 void motor::setDirection(const byte direction) {

@@ -102,7 +102,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
         return 1;
 }
 
-void manual_control(step_mode_t mode) {
+void manual_control(step_mode_t mode, motor &chosenMotor) {
     
     char key_pressed;
     bool want_to_exit = false;
@@ -116,11 +116,19 @@ void manual_control(step_mode_t mode) {
         if (key_pressed == 'A') {
             // edit distance
             N_steps = get_distance();
+            Serial.print("Distance is: ");
+            Serial.println(N_steps);
+            // TODO: refresh LCD
         } else if (key_pressed == '1') {
             // go left
+            chosenMotor.setDirection(LOW);
+            chosenMotor.step(N_steps);
         } else if (key_pressed == '3') {
             // go right
-        }
+            chosenMotor.setDirection(HIGH);
+            chosenMotor.step(N_steps);
+        } else if (key_pressed == '*')
+            want_to_exit = true;
     }
 }
 

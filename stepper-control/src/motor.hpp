@@ -17,6 +17,7 @@ public:
             const int stepsPerRev, const int fullStepsPerInterval); // Constructor
 	~motor(); // Destructor
 	void step() const;
+    void step(int) const;
     void setStepMode(const step_mode_t mode);
     void setDirection(const byte direction);
     void move();
@@ -26,6 +27,7 @@ public:
 	
 private:
     size_t _microsteps;
+    int _minDelay; 
     int _fullStepsPerInterval;
 	byte _directionPin;
 	byte _stepPin;
