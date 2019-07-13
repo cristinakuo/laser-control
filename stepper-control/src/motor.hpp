@@ -21,7 +21,7 @@ public:
     void setDirection(const byte direction);
     void move();
     void init();
-
+    int getStepsPerRevolution() const;
     bool isCarrito; // DEBUG
 	
 private:

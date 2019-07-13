@@ -132,3 +132,7 @@ void motor::move() {
             Serial.println(micros()-initial_time); // DEBUG  
     } 
 }
+
+int motor::getStepsPerRevolution() const {
+    return _stepsPerRevolution;
+}   

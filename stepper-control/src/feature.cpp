@@ -38,11 +38,10 @@ void wait_to_start() {
 
 // Calculates time table in micro seconds
 size_t create_table(functions_t f, step_mode_t mode) {
-    int mm_per_rev = 1;
     if (f == ARCHIMEDEAN) {
         long X0_measured = 10; // [mm]
         long X_min = 1;
-        float dx = (float)(FULL_STEPS_PER_INTERVAL * mm_per_rev) / STEPS_PER_REV; // [mm] Distance
+        float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
         size_t i_limit;
@@ -101,4 +100,27 @@ size_t create_table(functions_t f, step_mode_t mode) {
     }
     else
         return 1;
+}
+
+void manual_control(step_mode_t mode) {
+    // Get input
+    char key_pressed;
+    bool want_to_exit = false;
+    float distance_mm = 1; // [mm]
+    int N_steps = 200;
+    // Show in pantalla
+    while(want_to_exit != true) {
+        key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace
+        if (key_pressed == 'A') {
+            // edit distance
+        } else if (key_pressed == '1') {
+            // go left
+        } else if (key_pressed == '3') {
+            // go right
+        }
+    }
+}
+
+int mm_to_steps(float x_mm, motor the_motor) {
+       return x_mm*the_motor.getStepsPerRevolution()/MM_PER_REV;
 }
