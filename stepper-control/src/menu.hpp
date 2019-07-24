@@ -3,10 +3,14 @@
 
 #include <Arduino.h>
 #include "feature.hpp"
+#include "motor.hpp"
 
 #define NUM_LEVELS 3
 #define NUM_MENU_ITEMS 4
 #define VALUE_ERROR -1
+
+extern motor carrito;
+extern motor target;
 
 typedef struct {
 	int input;

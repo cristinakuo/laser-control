@@ -102,20 +102,20 @@ size_t create_table(functions_t f, step_mode_t mode) {
         return 1;
 }
 
-void manual_control(step_mode_t mode, motor &chosenMotor) {
-    
+void manual_control(motor &chosenMotor) {
+    //step_mode_t mode = chosenMotor.getStepMode();
     char key_pressed;
     bool want_to_exit = false;
     
     // Initial values
     float distance_mm = 1; // [mm] 
-    int N_steps = mm_to_steps(distance_mm);
+    int N_steps = mm_to_steps(distance_mm, chosenMotor);
     // Show in pantalla
     while(want_to_exit != true) {
         key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace
         if (key_pressed == 'A') {
             // edit distance
-            N_steps = get_distance();
+            N_steps = get_distance(chosenMotor);
             Serial.print("Distance is: ");
             Serial.println(N_steps);
             // TODO: refresh LCD
@@ -133,13 +133,13 @@ void manual_control(step_mode_t mode, motor &chosenMotor) {
 }
 
 
-int get_distance() {
+int get_distance(motor the_motor) {
     char char_dist;
     char_dist = customKeypad.waitForKey();
 
     // TODO: VALIDAAAR
     // TODO: hacer que pueda recibir dos digitos
-    return mm_to_steps(char_dist - '0');  
+    return mm_to_steps(char_dist - '0',the_motor);  
 }
 
 int mm_to_steps(float x_mm, motor the_motor) {

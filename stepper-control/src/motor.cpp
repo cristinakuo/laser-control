@@ -32,6 +32,7 @@ motor::motor(const byte step_pin, const byte direction_pin,
 
 
 void motor::setStepMode(const step_mode_t mode) {
+    _stepMode = mode;
     if (mode == FULL) {
         digitalWrite(_MS1Pin, LOW);
         digitalWrite(_MS2Pin, LOW);
@@ -148,4 +149,8 @@ void motor::move() {
 
 int motor::getStepsPerRevolution() const {
     return _stepsPerRevolution;
-}   
+}  
+
+step_mode_t motor::getStepMode() const {
+    return _stepMode;
+}

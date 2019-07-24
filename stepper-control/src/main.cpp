@@ -19,7 +19,7 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, KEYPAD_ROWS
 
 // Stepper
 step_mode_t chosenMode = SIXTEENTH; // DEBUG: despues deberia ser const!
-byte chosenDir = LOW; // DEBUG: solo para cambiar facilmente en las pruebas
+byte chosenDir = HIGH; // DEBUG: solo para cambiar facilmente en las pruebas
 
 motor carrito(STEP_PIN, DIRECTION_PIN, LENSE_MS1_PIN, LENSE_MS2_PIN, LENSE_MS3_PIN,
             chosenMode, STEPS_PER_REV, FULL_STEPS_PER_INTERVAL);

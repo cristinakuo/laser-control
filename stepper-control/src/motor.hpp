@@ -19,6 +19,7 @@ public:
 	void step() const;
     void step(int) const;
     void setStepMode(const step_mode_t mode);
+    step_mode_t getStepMode() const;
     void setDirection(const byte direction);
     void move();
     void init();
@@ -37,6 +38,7 @@ private:
 	size_t _stepsPerRevolution;
     int i; // Table
     int i_sign; // Table
+    step_mode_t _stepMode;
 
     long unsigned _timeToMove;
     long unsigned _stepDelay;

@@ -21,14 +21,14 @@ extern long unsigned initial_time;
 
 // Main features
 void barrido(functions_t func);
-void manual_control();
-
 
 void wait_to_start(); // TODO: mover
+
 // Functions
 size_t create_table(functions_t, step_mode_t);
+int mm_to_steps(float,motor);
+int get_distance(motor);
 
-int mm_to_steps(float);
-int get_distance();
+void manual_control(motor&);
  
 #endif
