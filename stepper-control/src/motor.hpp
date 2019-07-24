@@ -25,6 +25,7 @@ public:
     void init();
     int getStepsPerRevolution() const;
     bool isCarrito; // DEBUG
+    void resetCounter();
 	
 private:
     size_t _microsteps;
@@ -36,7 +37,7 @@ private:
 	byte _MS2Pin;
 	byte _MS3Pin; 
 	size_t _stepsPerRevolution;
-    int i; // Table
+    int _i; // Table
     int i_sign; // Table
     step_mode_t _stepMode;
 

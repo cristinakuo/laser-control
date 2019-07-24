@@ -14,16 +14,20 @@ void barrido(functions_t func) {
     wait_to_start();
 
     initial_time = micros();
+    carrito.resetCounter();
+    target.resetCounter();
     carrito.init();
     target.init();
     // Loop
-    char stopkey = '0';
-    while(stopkey != '*') {
+    char stopkey = '0'; // Pongo en cualquiera
+
+    while (stopkey != '*') {
         carrito.move();
         target.move();
         stopkey = customKeypad.getKey();
     }
     Serial.println("Stopped.");
+    
 }
 
 // Loop until button is hit
@@ -92,6 +96,12 @@ size_t create_table(functions_t f, step_mode_t mode) {
             timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
         }
 
+        // DEBUG
+        //Serial.println("Table is:");
+        //for (i = 0; i < length; i++) {
+        //    Serial.println(timeTable[i]);
+        //}
+
         return length;
     }
     else if (f == LINEAR) {
@@ -108,8 +118,9 @@ void manual_control(motor &chosenMotor) {
     bool want_to_exit = false;
     
     // Initial values
-    float distance_mm = 1; // [mm] 
+    float distance_mm = 1; // [mm] TODO: llevar 
     int N_steps = mm_to_steps(distance_mm, chosenMotor);
+    Serial.println("1 para ir a la izquierda, 3 para ir a la derecha");
     // Show in pantalla
     while(want_to_exit != true) {
         key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace

@@ -23,7 +23,7 @@ motor::motor(const byte step_pin, const byte direction_pin,
     // Default value
     setStepMode(mode);
     _fullStepsPerInterval = fullStepsPerInterval;
-    i = 0;
+    _i = 0;
     i_sign = 1;
     _stepsPerInterval = _fullStepsPerInterval * _microsteps; // OJO: declarar despues de settear el step mode
     _takenStepsInInterval = 0;
@@ -97,7 +97,9 @@ void motor::setDirection(const byte direction) {
 }
 
 void motor::init() {
-    _stepDelay = floor((float)timeTable[i] / (float) _stepsPerInterval);
+    _i = 0;
+    i_sign = 1;
+    _stepDelay = floor((float)timeTable[0] / (float) _stepsPerInterval);
     if (isCarrito == true)
         Serial.println(micros()-initial_time); // DEBUG  
     _timeToMove = _stepDelay;
@@ -116,30 +118,30 @@ void motor::move() {
 
     // Change interval
     if (_takenStepsInInterval >= _stepsPerInterval) {
-        _timeLastInterval += timeTable[i];
-        i = i + i_sign;
+        _timeLastInterval += timeTable[_i];
+        _i = _i + i_sign;
 
         // Check end of array
-        if (i < 0) {
+        if (_i < 0) {
             if (digitalRead(_directionPin) == HIGH)
                 digitalWrite(_directionPin,LOW);
             else
                 digitalWrite(_directionPin,HIGH);
             i_sign = -i_sign;
-            i = i + i_sign;
+            _i = _i + i_sign;
             _nRounds++;  
         } 
         // If index exceeds max index value, then index direction has to be changed
-        else if (i >= (int)table_size) {
+        else if (_i >= (int)table_size) {
             i_sign = -i_sign;
-            i = i + i_sign;
+            _i = _i + i_sign;
             _nRounds++;
         }
         if (_nRounds == 2)
             must_stop = true;
             
         // Reasignar parametros
-        _stepDelay = floor((float)timeTable[i] / (float) _stepsPerInterval);
+        _stepDelay = floor((float)timeTable[_i] / (float) _stepsPerInterval);
         _takenStepsInInterval = 0;
         _timeToMove = _stepDelay;
         if (isCarrito == true)
@@ -153,4 +155,8 @@ int motor::getStepsPerRevolution() const {
 
 step_mode_t motor::getStepMode() const {
     return _stepMode;
+}
+
+void motor::resetCounter() {
+    _i = 0;
 }
