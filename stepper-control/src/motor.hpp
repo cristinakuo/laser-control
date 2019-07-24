@@ -24,8 +24,7 @@ public:
     void move();
     void init();
     int getStepsPerRevolution() const;
-    bool isCarrito; // DEBUG
-    void resetCounter();
+    bool log; // DEBUG
 	
 private:
     size_t _microsteps;

@@ -78,7 +78,7 @@ void execute_sub1sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEM
 	Serial.println("This is ESPEJO:");
 	Serial.println("1. Go back");
     manual_control(carrito);
-    delay(1000);
+    delay(250);
     st.has_opt = true;
 	st.input = 1;  // Vuelve automaticamente atras 
 }

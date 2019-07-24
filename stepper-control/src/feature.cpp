@@ -1,8 +1,8 @@
 #include "feature.hpp"
 
 void barrido(functions_t func) {
-    carrito.isCarrito = true; // DEBUG: esto es harcodeado para imprimir
-    target.isCarrito = false; // DEBUG: esto es harcodeado
+    carrito.log = true; // DEBUG: esto es harcodeado para imprimir
+    target.log = false; // DEBUG: esto es harcodeado
     
     target.setDirection(chosenDir);
     carrito.setDirection(chosenDir);
@@ -14,13 +14,11 @@ void barrido(functions_t func) {
     wait_to_start();
 
     initial_time = micros();
-    carrito.resetCounter();
-    target.resetCounter();
     carrito.init();
     target.init();
+    
     // Loop
     char stopkey = '0'; // Pongo en cualquiera
-
     while (stopkey != '*') {
         carrito.move();
         target.move();

@@ -100,10 +100,11 @@ void motor::init() {
     _i = 0;
     i_sign = 1;
     _stepDelay = floor((float)timeTable[0] / (float) _stepsPerInterval);
-    if (isCarrito == true)
+    if (log == true)
         Serial.println(micros()-initial_time); // DEBUG  
     _timeToMove = _stepDelay;
     _takenStepsInInterval = 0;
+    _timeLastInterval = 0;
     _nRounds = 0; // DEBUG
 }
 
@@ -118,6 +119,7 @@ void motor::move() {
 
     // Change interval
     if (_takenStepsInInterval >= _stepsPerInterval) {
+
         _timeLastInterval += timeTable[_i];
         _i = _i + i_sign;
 
@@ -144,7 +146,7 @@ void motor::move() {
         _stepDelay = floor((float)timeTable[_i] / (float) _stepsPerInterval);
         _takenStepsInInterval = 0;
         _timeToMove = _stepDelay;
-        if (isCarrito == true)
+        if (log == true)
             Serial.println(micros()-initial_time); // DEBUG  
     } 
 }
@@ -155,8 +157,4 @@ int motor::getStepsPerRevolution() const {
 
 step_mode_t motor::getStepMode() const {
     return _stepMode;
-}
-
-void motor::resetCounter() {
-    _i = 0;
 }
