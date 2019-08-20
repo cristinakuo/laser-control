@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "feature.hpp"
 #include "motor.hpp"
+#include "LiquidCrystal_I2C.h" //Library for LCD
 
 #define NUM_LEVELS 3
 #define NUM_MENU_ITEMS 4
@@ -11,6 +12,7 @@
 
 extern motor carrito;
 extern motor target;
+extern LiquidCrystal_I2C lcd;
 
 typedef struct {
 	int input;

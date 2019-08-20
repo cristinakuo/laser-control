@@ -13,12 +13,19 @@ void barrido(functions_t func) {
     // Teclado para empezar
     wait_to_start();
 
+    //TODO: que diga si es arq o lineal
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("   AutoMode");
+    lcd.setCursor(0,1); 
+    lcd.print("Press * to stop"); 
+
     initial_time = micros();
     carrito.init();
     target.init();
     
     // Loop
-    char stopkey = '0'; // Pongo en cualquiera
+    char stopkey = '0'; // TODO: Pongo en cualquiera
     while (stopkey != '*') {
         carrito.move();
         target.move();
@@ -32,6 +39,11 @@ void barrido(functions_t func) {
 void wait_to_start() {
     char button = '1';
     Serial.println("Press 0 to start:");
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("Press 0 to start"); 
+
     while(button!='0') {
         button = customKeypad.getKey();
     }
@@ -119,6 +131,13 @@ void manual_control(motor &chosenMotor) {
     float distance_mm = 1; // [mm] TODO: llevar 
     int N_steps = mm_to_steps(distance_mm, chosenMotor);
     Serial.println("1 para ir a la izquierda, 3 para ir a la derecha");
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("1.Ir a izq"); 
+    lcd.setCursor(0,1); 
+    lcd.print("3. Ir a der");
+
     // Show in pantalla
     while(want_to_exit != true) {
         key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace

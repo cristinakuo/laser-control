@@ -6,6 +6,8 @@
 #include "ports.hpp"
 #include "motor.hpp"
 
+#include "LiquidCrystal_I2C.h" //Library for LCD
+
 #define BAUDRATE 9600 // Serial communication
 
 // Global variables 
@@ -16,6 +18,9 @@ long unsigned initial_time; // [us]
 
 // Keypad
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, KEYPAD_ROWS, KEYPAD_COLS); 
+
+// LCD Display
+LiquidCrystal_I2C lcd(0x3F,16,2); 
 
 // Stepper
 step_mode_t chosenMode = SIXTEENTH; // DEBUG: despues deberia ser const!
@@ -35,8 +40,13 @@ bool thereIsInput;
 void setup() {
 	// Init serial communication
     Serial.begin(BAUDRATE);
-    // Set input and output ports
-    //pinMode(BUTTON_PIN, INPUT);
+    lcd.init();
+    lcd.backlight();
+    lcd.setCursor(0,0); //Set the cursor on the first column and first row.
+    lcd.print("Hello, human."); //Print the string "Hello World!"
+    //lcd.setCursor(2,1); //Set the cursor on the third column and the second row (counting starts at 0!.
+    //lcd.print("My name is laser master");
+    delay(1000);
 }
 
 void loop() {
@@ -51,11 +61,16 @@ void loop() {
             my_menu.has_opt = false;
             break;
         }
-        if (Serial.available() > 0) { // TODO: Cambiar a keypad
-			myOpt = Serial.read();
-			myOpt = myOpt - 48;
-			thereIsInput = true;
-		}
+        //if (Serial.available() > 0) { // TODO: Cambiar a keypad
+		//	myOpt = Serial.read();
+		//	myOpt = myOpt - 48;
+		//	thereIsInput = true;
+		//}
+        myOpt = customKeypad.getKey();
+        if (myOpt != NO_KEY) {
+ 			myOpt = myOpt - 48;
+			thereIsInput = true;           
+        }
 		else 
 			myOpt = 0;
 	}

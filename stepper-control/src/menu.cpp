@@ -54,6 +54,12 @@ void execute_main_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) 
 	Serial.println("This is MAIN MENU:");
 	Serial.println(" 1. Control manual");
 	Serial.println(" 2. Barrido");
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("1. Manual"); 
+    lcd.setCursor(0,1); 
+    lcd.print("2. Automatic");
 }
 
 void execute_sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
@@ -64,6 +70,12 @@ void execute_sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) 
 	// Aca podria ir para ingresar un dato. con una funcion para ingresar un dato.
 	// Keypad.receive y LCD execute
 	// Guardarlo en una variable
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("1.Espj 2.Blnc"); 
+    lcd.setCursor(0,1); 
+    lcd.print("3. Atras");
 }
 
 void execute_sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
@@ -71,6 +83,13 @@ void execute_sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) 
 	Serial.println("1. Arquimedes");
 	Serial.println("2. Lineal");
 	Serial.println("3. Go back"); 
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("1.Arq 2.Lin"); 
+    lcd.setCursor(0,1); 
+    lcd.print("3. Atras");
+
 }
 
 

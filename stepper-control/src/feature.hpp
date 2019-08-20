@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "motor.hpp"
 #include "Keypad.h"
+#include "LiquidCrystal_I2C.h" //Library for LCD
 
 #define ARRAY_MAX_LEN 200 // Maximum length of Time interval array
 #define STEPS_PER_REV 200
@@ -18,6 +19,7 @@ extern motor carrito;
 extern step_mode_t chosenMode;
 extern byte chosenDir;
 extern long unsigned initial_time;
+extern LiquidCrystal_I2C lcd;
 
 // Main features
 void barrido(functions_t func);
