@@ -20,6 +20,7 @@ extern step_mode_t chosenMode;
 extern byte chosenDir;
 extern long unsigned initial_time;
 extern LiquidCrystal_I2C lcd;
+extern volatile bool must_stop;
 
 // Main features
 void barrido(functions_t func);

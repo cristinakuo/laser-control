@@ -71,7 +71,7 @@ void motor::setStepMode(const step_mode_t mode) {
         digitalWrite(_MS3Pin, HIGH);
         _stepsPerRevolution = 3200;
         _microsteps = 16; 
-        _minDelay = 100; 
+        _minDelay = 100; // TODO: un getter de este min delay
     }
 }
 
@@ -116,7 +116,7 @@ void motor::move() {
         _takenStepsInInterval++;
         _timeToMove += _stepDelay; 
     }
-
+    // TODO: agregar un else return
     // Change interval
     if (_takenStepsInInterval >= _stepsPerInterval) {
 
@@ -139,7 +139,7 @@ void motor::move() {
             _i = _i + i_sign;
             _nRounds++;
         }
-        if (_nRounds == 2)
+        if (_nRounds == 2) // DEBUG
             must_stop = true;
             
         // Reasignar parametros

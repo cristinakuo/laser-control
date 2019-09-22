@@ -38,6 +38,7 @@ menu_list_t my_menu_list[NUM_MENU_ITEMS];
 bool thereIsInput;
 
 void setup() {
+    carrito.log = true;// DEBUG
 	// Init serial communication
     Serial.begin(BAUDRATE);
     lcd.init();

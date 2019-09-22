@@ -26,7 +26,7 @@ void barrido(functions_t func) {
     
     // Loop
     char stopkey = '0'; // TODO: Pongo en cualquiera
-    while (stopkey != '*') {
+    while (stopkey != '*' && must_stop == false) {
         carrito.move();
         target.move();
         stopkey = customKeypad.getKey();
@@ -97,7 +97,8 @@ size_t create_table(functions_t f, step_mode_t mode) {
             microsteps = 8;
         }
         else if (mode == SIXTEENTH) {
-            min_delay = 100;
+            //min_delay = 100; // Esto esta repetido
+            min_delay = 200;
             microsteps = 16;
         }
             
@@ -111,6 +112,10 @@ size_t create_table(functions_t f, step_mode_t mode) {
         //for (i = 0; i < length; i++) {
         //    Serial.println(timeTable[i]);
         //}
+        // DEBUG
+        for(i = 0; i < 200; i++) {
+            timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL; // [us]
+        }
 
         return length;
     }
