@@ -14,7 +14,7 @@ void setup() {
     Serial.begin(BAUDRATE);
     wait_to_start();
     initial_time = micros();
-    //Serial.println(micros()-initial_time);
+    Serial.println(0);
     prev_state = digitalRead(SENSOR_PIN);
     //attachInterrupt(digitalPinToInterrupt(SENSOR_PIN),ISR_printTime,CHANGE);
 }
