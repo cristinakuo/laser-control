@@ -180,9 +180,9 @@ int mm_to_steps(float x_mm, motor the_motor) {
 }
 
 // DEBUG: move to somewhere else
-int receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
+float receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
 	const size_t MAX_DIGITS = 10;
-	const char STOP_KEY = '#'; // TODO: universal enter
+	const char ENTER_KEY = '#'; // TODO: universal enter
 	char digits[MAX_DIGITS];
 	char pressed_key;
 	size_t i = 0;
@@ -194,7 +194,7 @@ int receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
 	while (finished_input != true) {
 		pressed_key = keypad.waitForKey();
 		
-		if (pressed_key == STOP_KEY) {
+		if (pressed_key == ENTER_KEY) {
 			finished_input = true;
 		} else if (i >= MAX_DIGITS){
 			
@@ -206,9 +206,9 @@ int receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
             lcd.print(pressed_key);
 			i++;
 		}
-
 	}
-    // Hacer input_num =atof(digits)
-    // Serial.println(input_num);
-	return 1; // DEBUG
+    // DEBUG
+    Serial.print("Input number is:"); 
+    Serial.println(atof(digits));
+	return atof(digits); // DEBUG
 }

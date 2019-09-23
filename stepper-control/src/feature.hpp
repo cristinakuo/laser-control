@@ -33,6 +33,6 @@ int mm_to_steps(float,motor);
 int get_distance(motor);
 
 void manual_control(motor&);
-int receive_number(Keypad keypad, LiquidCrystal_I2C lcd); // DEBUG: move to somewhere else
+float receive_number(Keypad keypad, LiquidCrystal_I2C lcd); // DEBUG: move to somewhere else
  
 #endif
