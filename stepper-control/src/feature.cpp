@@ -113,9 +113,9 @@ size_t create_table(functions_t f, step_mode_t mode) {
         //    Serial.println(timeTable[i]);
         //}
         // DEBUG
-        for(i = 0; i < 200; i++) {
-            timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL; // [us]
-        }
+        //for(i = 0; i < 200; i++) {
+        //    timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL; // [us]
+        //}
 
         return length;
     }
