@@ -1,7 +1,7 @@
 #ifndef _STEPPER_HPP_INCLUDED_
 #define _STEPPER_HPP_INCLUDED_
-
 #include <Arduino.h>
+#include <ArduinoSTL.h>
 extern long unsigned initial_time;
 extern long unsigned timeTable[200];
 extern size_t table_size;

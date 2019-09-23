@@ -1,7 +1,7 @@
 #ifndef _FEATURE_HPP_INCLUDED_
 #define _FEATURE_HPP_INCLUDED_
-
-#include "Arduino.h"
+#include <Arduino.h>
+#include <ArduinoSTL.h>
 #include "motor.hpp"
 #include "Keypad.h"
 #include "LiquidCrystal_I2C.h" //Library for LCD
@@ -33,5 +33,6 @@ int mm_to_steps(float,motor);
 int get_distance(motor);
 
 void manual_control(motor&);
+int receive_number(Keypad keypad, LiquidCrystal_I2C lcd); // DEBUG: move to somewhere else
  
 #endif
