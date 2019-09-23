@@ -4,7 +4,7 @@ import time
 import argparse
 
 BAUDRATE = 9600
-COMPORT_MOTORS = 'COM12'
+COMPORT_MOTORS = 'COM13'
 COMPORT_SENSOR = 'COM6' # TODO: Ver cual es 
 SENSOR_FILE_DEFAULT = 'sensor_output.txt'
 MOTOR_FILE_DEFAULT = 'motor_output.txt'
@@ -20,7 +20,7 @@ def parse_cmdline():
     # Convert to dictionary type
     args_dictionary = vars(parsed_arguments)
     
-    motorfile = args_dictionary["motoroutput"]
+    motorfile = args_dictionary["motoroutput"] 
     sensorfile = args_dictionary["sensoroutput"]
     
     if sensorfile == None:
