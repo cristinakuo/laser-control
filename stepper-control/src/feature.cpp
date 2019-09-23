@@ -178,3 +178,37 @@ int get_distance(motor the_motor) {
 int mm_to_steps(float x_mm, motor the_motor) {
        return x_mm*the_motor.getStepsPerRevolution()/MM_PER_REV;
 }
+
+// DEBUG: move to somewhere else
+int receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
+	const size_t MAX_DIGITS = 10;
+	const char STOP_KEY = '#'; // TODO: universal enter
+	char digits[MAX_DIGITS];
+	char pressed_key;
+	size_t i = 0;
+	bool finished_input = false;
+
+    lcd.clear();
+    lcd.autoscroll(); // TODO: ver si hay que sacarlo para que no genere problemas o quizas ponerlo desde el principio
+
+	while (finished_input != true) {
+		pressed_key = keypad.waitForKey();
+		
+		if (pressed_key == STOP_KEY) {
+			finished_input = true;
+		} else if (i >= MAX_DIGITS){
+			
+    		lcd.setCursor(0,1); 
+    		lcd.print("Err:Reached max"); 
+			finished_input = true;
+		} { 
+			digits[i] = pressed_key;
+            lcd.print(pressed_key);
+			i++;
+		}
+
+	}
+    // Hacer input_num =atof(digits)
+    // Serial.println(input_num);
+	return 1; // DEBUG
+}
