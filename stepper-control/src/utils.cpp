@@ -8,7 +8,6 @@ float receive_number() {
 	size_t i = 0;
 	bool finished_input = false;
 
-    lcd.clear();
     lcd.autoscroll(); 
 
 	while (finished_input != true) {
@@ -18,7 +17,7 @@ float receive_number() {
 			finished_input = true;
 		} else if (i >= MAX_DIGITS){
 			
-    		lcd.setCursor(0,1); 
+    		lcd.setCursor(0,2); 
     		lcd.print("Err:Reached max"); 
 			finished_input = true;
 		} { 
@@ -36,3 +35,5 @@ float receive_number() {
 
 	return atof(digits); // DEBUG
 }
+
+# TODO: initialize arrays with all zeros
