@@ -36,4 +36,4 @@ float receive_number() {
 	return atof(digits); // DEBUG
 }
 
-# TODO: initialize arrays with all zeros
+// TODO: initialize arrays with all zeros
