@@ -55,14 +55,6 @@ void ask_for_new_step_param() {
     delay(1000); 
     float coarse_step = receive_number();
 
-    // TEST
-    Serial.println("*******TEST********");
-    if (fine_step == 2.6 && coarse_step == 5.1) {
-        Serial.println("TEST SUCCESS");
-    } else {
-        Serial.println("TEST FAILURE");
-    }
-    
     step_param_t new_param;
     new_param.fine = fine_step;
     new_param.coarse = coarse_step;

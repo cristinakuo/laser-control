@@ -138,6 +138,14 @@ void manual_control(motor &chosenMotor) {
     step_param_t parameters;
     EEPROM.get(STEP_PARAM_ADDR, parameters);
 
+    // TEST
+    Serial.println("*******TEST********");
+    if (parameters.fine == 2.6 && parameters.coarse == 5.1) {
+        Serial.println("TEST SUCCESS");
+    } else {
+        Serial.println("TEST FAILURE");
+    }
+    
     int N_steps_fine = mm_to_steps(parameters.fine, chosenMotor);
     int N_steps_coarse = mm_to_steps(parameters.coarse, chosenMotor);
 
