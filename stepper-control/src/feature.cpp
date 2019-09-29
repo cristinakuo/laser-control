@@ -133,34 +133,40 @@ void manual_control(motor &chosenMotor) {
     bool want_to_exit = false;
     
     // Initial values
-    float distance_mm = 1; // [mm] TODO: llevar 
-    int N_steps = mm_to_steps(distance_mm, chosenMotor);
-    Serial.println("1 para ir a la izquierda, 3 para ir a la derecha");
+    //float distance_mm = 1; // [mm] TODO: llevar 
+    ask_for_new_step_param();
+    step_param_t parameters;
+    EEPROM.get(STEP_PARAM_ADDR, parameters);
+
+    int N_steps_fine = mm_to_steps(parameters.fine, chosenMotor);
+    int N_steps_coarse = mm_to_steps(parameters.coarse, chosenMotor);
 
     lcd.clear();
     lcd.setCursor(0,0); 
-    lcd.print("1.Ir a izq"); 
+    lcd.print("1) o 4) IZQ"); 
     lcd.setCursor(0,1); 
-    lcd.print("3. Ir a der");
+    lcd.print("3) o 6) DER");
 
     // Show in pantalla
     while(want_to_exit != true) {
-        key_pressed = customKeypad.getKey(); // OJO: no es bloqueante y si no recibe nada no se que hace
-        if (key_pressed == 'A') {
-            // edit distance
-            N_steps = get_distance(chosenMotor);
-            Serial.print("Distance is: ");
-            Serial.println(N_steps);
-            // TODO: refresh LCD
-        } else if (key_pressed == '1') {
+        key_pressed = customKeypad.waitForKey(); 
+        if (key_pressed == '1') {
             // go left
             chosenMotor.setDirection(LOW);
-            chosenMotor.step(N_steps);
+            chosenMotor.step(N_steps_coarse);
         } else if (key_pressed == '3') {
             // go right
             chosenMotor.setDirection(HIGH);
-            chosenMotor.step(N_steps);
-        } else if (key_pressed == '*')
+            chosenMotor.step(N_steps_coarse);
+        } else if (key_pressed == '4') {
+            // go right
+            chosenMotor.setDirection(LOW);
+            chosenMotor.step(N_steps_fine);
+        } else if (key_pressed == '6') {
+            // go right
+            chosenMotor.setDirection(HIGH);
+            chosenMotor.step(N_steps_fine);
+        } else if (key_pressed == '#')
             want_to_exit = true;
     }
 }
@@ -179,36 +185,3 @@ int mm_to_steps(float x_mm, motor the_motor) {
        return x_mm*the_motor.getStepsPerRevolution()/MM_PER_REV;
 }
 
-// DEBUG: move to somewhere else
-float receive_number(Keypad keypad, LiquidCrystal_I2C lcd) {
-	const size_t MAX_DIGITS = 10;
-	const char ENTER_KEY = '#'; // TODO: universal enter
-	char digits[MAX_DIGITS];
-	char pressed_key;
-	size_t i = 0;
-	bool finished_input = false;
-
-    lcd.clear();
-    lcd.autoscroll(); // TODO: ver si hay que sacarlo para que no genere problemas o quizas ponerlo desde el principio
-
-	while (finished_input != true) {
-		pressed_key = keypad.waitForKey();
-		
-		if (pressed_key == ENTER_KEY) {
-			finished_input = true;
-		} else if (i >= MAX_DIGITS){
-			
-    		lcd.setCursor(0,1); 
-    		lcd.print("Err:Reached max"); 
-			finished_input = true;
-		} { 
-			digits[i] = pressed_key;
-            lcd.print(pressed_key);
-			i++;
-		}
-	}
-    // DEBUG
-    Serial.print("Input number is:"); 
-    Serial.println(atof(digits));
-	return atof(digits); // DEBUG
-}

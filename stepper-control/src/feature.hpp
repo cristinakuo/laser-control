@@ -5,6 +5,7 @@
 #include "motor.hpp"
 #include "Keypad.h"
 #include "LiquidCrystal_I2C.h" //Library for LCD
+#include "manual_control.hpp"
 
 #define ARRAY_MAX_LEN 200 // Maximum length of Time interval array
 #define STEPS_PER_REV 200
@@ -34,5 +35,5 @@ int get_distance(motor);
 
 void manual_control(motor&);
 float receive_number(Keypad keypad, LiquidCrystal_I2C lcd); // DEBUG: move to somewhere else
- 
+
 #endif
