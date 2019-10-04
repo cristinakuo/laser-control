@@ -35,23 +35,29 @@ void ask_for_new_step_param() {
     // TODO: Mover a una clase keypad propia
     // If answer is no, get out of function
     char gottenKey = ' ';
-    while(gottenKey != '1' || gottenKey != '3') {
+    while(gottenKey != '1' && gottenKey != '3') {
+        Serial.println("Antes del waitForKey");
         gottenKey = customKeypad.waitForKey();
+        Serial.println(gottenKey);
+        Serial.println("Dsp del waitForKey");
     }
-    if (gottenKey == '3') // No
+    if (gottenKey == '3') {// No
+        Serial.println("Returned from asking parameters without asking for new");
         return;
-    
+    }
     
     // Proceed with setting new params
     lcd.clear();
     lcd.setCursor(0,0); 
     lcd.print("Enter Fine:");
+    lcd.setCursor(0,1); 
     delay(1000); 
     float fine_step = receive_number();
 
     lcd.clear();
     lcd.setCursor(0,0); 
     lcd.print("Enter Coarse:");
+    lcd.setCursor(0,1); 
     delay(1000); 
     float coarse_step = receive_number();
 

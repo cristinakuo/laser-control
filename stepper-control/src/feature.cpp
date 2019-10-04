@@ -140,12 +140,20 @@ void manual_control(motor &chosenMotor) {
 
     // TEST
     Serial.println("*******TEST********");
-    if (parameters.fine == 2.6 && parameters.coarse == 5.1) {
+    if (parameters.fine == 2.60 && parameters.coarse == 5.10) {
         Serial.println("TEST SUCCESS");
     } else {
         Serial.println("TEST FAILURE");
     }
     
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("UsingParam:"); 
+    lcd.setCursor(0,1); 
+    lcd.print(parameters.fine);
+    lcd.setCursor(7,1);     
+    lcd.print(parameters.coarse);
+    delay(2000);
     int N_steps_fine = mm_to_steps(parameters.fine, chosenMotor);
     int N_steps_coarse = mm_to_steps(parameters.coarse, chosenMotor);
 

@@ -8,7 +8,7 @@ float receive_number() {
 	size_t i = 0;
 	bool finished_input = false;
 
-    lcd.autoscroll(); 
+    //lcd.autoscroll(); 
 
 	while (finished_input != true) {
 		pressed_key = customKeypad.waitForKey();
@@ -20,8 +20,10 @@ float receive_number() {
     		lcd.setCursor(0,2); 
     		lcd.print("Err:Reached max"); 
 			finished_input = true;
-		} { 
-			digits[i] = pressed_key;
+		} else { 
+			if (pressed_key == '*')
+                pressed_key = '.'; 
+            digits[i] = pressed_key;
             lcd.print(pressed_key);
 			i++;
 		}
@@ -31,7 +33,7 @@ float receive_number() {
     Serial.print("Input number is:"); 
     Serial.println(atof(digits));
 
-    lcd.noAutoscroll();
+    //lcd.noAutoscroll();
 
 	return atof(digits); // DEBUG
 }
