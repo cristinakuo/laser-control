@@ -1,6 +1,7 @@
 #include "manual_control.hpp"
 
 step_param_t get_step_param() {
+
     step_param_t current_param;
     EEPROM.get(STEP_PARAM_ADDR, current_param);
     return current_param;

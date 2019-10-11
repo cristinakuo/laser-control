@@ -1,5 +1,5 @@
-#ifndef _MANUAL_CONTROL_HPP_INCLUDED_
-#define _MANUAL_CONTROL_HPP_INCLUDED_
+#ifndef _ARCHIMEDEAN_HPP_INCLUDED_
+#define _ARCHIMEDEAN_HPP_INCLUDED_
 
 #include <Arduino.h>
 #include <EEPROM.h>
@@ -9,13 +9,12 @@
 
 #include "utils.hpp"
 
-
 // Global variables
 extern Keypad customKeypad;
 extern LiquidCrystal_I2C lcd;
 
-step_param_t get_step_param();
-void show_current_step_param();
-void ask_for_new_step_param();
+params_arch_t get_archimedean_params();
+void show_current_archimedean_params();
+void ask_for_new_archimedean_params();
 
 #endif

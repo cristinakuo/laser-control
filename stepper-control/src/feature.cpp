@@ -1,9 +1,26 @@
 #include "feature.hpp"
 
+// Archimedean 
 void barrido(functions_t func) {
+    ask_for_new_archimedean_params(); // TODO: make object oriented
+    params_arch_t parameters;
+    // TODO: add X_min
+    EEPROM.get(ARCHIM_PARAM_ADDR, parameters);
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("UsingParam:"); 
+    lcd.setCursor(0,1); 
+    lcd.print(parameters.a);
+    lcd.setCursor(7,1);     
+    lcd.print(parameters.b);
+    delay(2000);
+    
     carrito.log = true; // DEBUG: esto es harcodeado para imprimir
     target.log = false; // DEBUG: esto es harcodeado
     
+    // Calibracion (otro feature)
+    // ask for new params: a, b, and X0
     target.setDirection(chosenDir);
     carrito.setDirection(chosenDir);
     
@@ -128,6 +145,7 @@ size_t create_table(functions_t f, step_mode_t mode) {
 }
 
 void manual_control(motor &chosenMotor) {
+    int STEP_PARAM_ADDR = 0; // TODO: fix this
     //step_mode_t mode = chosenMotor.getStepMode();
     char key_pressed;
     bool want_to_exit = false;
