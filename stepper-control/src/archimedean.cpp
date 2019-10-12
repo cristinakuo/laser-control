@@ -1,13 +1,13 @@
 #include "archimedean.hpp"
 
-params_arch_t get_archimedean_params() {
-    params_arch_t current_param;
+archimedean_param_t get_archimedean_params() {
+    archimedean_param_t current_param;
     EEPROM.get(ARCHIM_PARAM_ADDR, current_param);
     return current_param;
 }
 
 void show_current_archimedean_params() {
-    params_arch_t param = get_archimedean_params();
+    archimedean_param_t param = get_archimedean_params();
 
     String aStr = "a: ";
     String bStr = "b: ";
@@ -66,7 +66,7 @@ void ask_for_new_archimedean_params() {
     delay(1000); 
     float X_min = receive_number();
 
-    params_arch_t new_param;
+    archimedean_param_t new_param;
     new_param.a = a;
     new_param.b = b;
     new_param.X_min = X_min;

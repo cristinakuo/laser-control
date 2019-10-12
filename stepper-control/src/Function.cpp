@@ -19,3 +19,7 @@ Archimedean::Archimedean(float X0_measured, float a, float b, float X_min, float
 long unsigned Archimedean::eval(size_t i) {
     return (PI/_a/_b/_F * (pow(_X0,2)-pow(_X0-_dx*i,2)) - PI/_a/_b/_F * (pow(_X0,2)-pow(_X0-_dx*(i-1),2)))*1000000;
 }
+
+float Archimedean::getX0() const {
+    return _X0;
+}

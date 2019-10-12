@@ -8,11 +8,17 @@ typedef struct params {
     float coarse;
 } step_param_t;
 
+// TODO: Add X0 for calibration
 typedef struct params_arch {
     float a;
     float b;
     float X_min;
-} params_arch_t;
+} archimedean_param_t;
+
+typedef struct linear_params {
+    float linear_speed; // [mm/s]
+    float angular_speed; // [rad/s]
+} linear_param_t;
 
 // TODO: definir direccion para guardar parametros de funcion archimedean
 const int test_global_variable = 1;

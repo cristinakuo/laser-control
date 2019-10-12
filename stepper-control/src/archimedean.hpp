@@ -13,7 +13,7 @@
 extern Keypad customKeypad;
 extern LiquidCrystal_I2C lcd;
 
-params_arch_t get_archimedean_params();
+archimedean_param_t get_archimedean_params();
 void show_current_archimedean_params();
 void ask_for_new_archimedean_params();
 

@@ -31,7 +31,7 @@ void barrido(functions_t func);
 void wait_to_start(); // TODO: mover
 
 // Functions
-size_t create_table(params_arch_t, step_mode_t);
+size_t create_table(archimedean_param_t, step_mode_t);
 int mm_to_steps(float,motor);
 int get_distance(motor);
 

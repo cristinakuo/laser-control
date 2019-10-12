@@ -12,13 +12,14 @@ public:
 	virtual long unsigned eval(size_t i) = 0;
 };
 
+// TODO: change confusing name
 class Archimedean: public Function
 {
 public:
     ~Archimedean();
     Archimedean(float X0_measured, float a, float b, float X_min, float dx);
     long unsigned eval(size_t i);
-
+    float getX0() const;
 private:
     float _X0_measured;
     float _X_min;

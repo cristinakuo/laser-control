@@ -3,7 +3,7 @@
 // Archimedean 
 void barrido(functions_t func) {
     ask_for_new_archimedean_params(); // TODO: make object oriented
-    params_arch_t parameters;
+    archimedean_param_t parameters;
     // TODO: add X_min
     EEPROM.get(ARCHIM_PARAM_ADDR, parameters);
 
@@ -68,7 +68,7 @@ void wait_to_start() {
 }
 
 // Returns time in micro seconds, timing for full steps
-size_t create_table(params_arch_t parameters, step_mode_t mode) {
+size_t create_table(archimedean_param_t parameters, step_mode_t mode) {
  
     long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
     // Saving just for reference
@@ -77,22 +77,19 @@ size_t create_table(params_arch_t parameters, step_mode_t mode) {
     //float b = 0.6709;  
 
     float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
-    
-    size_t length = round(X0/dx); 
-    size_t i_limit;
-    
-    size_t i;
-    int microsteps = 1;
-    long min_delay = 700;   
-
     Archimedean function = Archimedean(X0_measured, parameters.a, parameters.b, parameters.X_min, dx);
-        
+    size_t length = round( function.getX0() / dx);
+    size_t i;
+
     for(i = 1; i <= length; i++) {
-        timeTable[i-1] = function.eval(i); // [s]
+        timeTable[i-1] = function.eval(i); // [micro seconds]
     }
 
+    size_t i_limit;   
+    int microsteps = 1;
+    long min_delay = 700; 
     // Max velocity control
-    i_limit = floor(((X0_measured - X_min) * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
+    i_limit = floor(((X0_measured - parameters.X_min) * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
 
     // TODO: error control
     if (i_limit >= length) {
