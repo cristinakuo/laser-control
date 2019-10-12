@@ -70,15 +70,15 @@ void wait_to_start() {
 // Calculates time table in micro seconds
 size_t create_table(functions_t f, step_mode_t mode) {
     if (f == ARCHIMEDEAN) {
-        long X0_measured = 10; // [mm]
-        long X_min = 1;
+        long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
+        long X_min = 1; // TODO: this should be a parameter
         float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
         float X0 =  floor(X0_measured/dx) * dx;
         size_t length = round(X0/dx); 
         size_t i_limit;
         // Parameters of the function
-        float a = 0.9489;
-        float b = 0.6709;
+        float a = 0.9489; // TODO: this should be a parameter
+        float b = 0.6709; // TODO: this should be a parameter
         float F = 10;
         size_t i;
         int microsteps = 1;
