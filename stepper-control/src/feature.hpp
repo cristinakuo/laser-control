@@ -7,6 +7,7 @@
 #include "LiquidCrystal_I2C.h" //Library for LCD
 #include "manual_control.hpp"
 #include "archimedean.hpp"
+#include "Function.hpp"
 
 #define ARRAY_MAX_LEN 200 // Maximum length of Time interval array
 #define STEPS_PER_REV 200
@@ -30,7 +31,7 @@ void barrido(functions_t func);
 void wait_to_start(); // TODO: mover
 
 // Functions
-size_t create_table(functions_t, step_mode_t);
+size_t create_table(params_arch_t, step_mode_t);
 int mm_to_steps(float,motor);
 int get_distance(motor);
 
