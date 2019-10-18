@@ -139,8 +139,8 @@ void motor::move() {
             _i = _i + i_sign;
             _nRounds++;
         }
-        if (_nRounds == 2) // DEBUG
-            must_stop = true;
+        //if (_nRounds == 2) // DEBUG
+        //    must_stop = true;
             
         // Reasignar parametros
         _stepDelay = floor((float)timeTable[_i] / (float) _stepsPerInterval);
