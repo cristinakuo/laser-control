@@ -29,6 +29,7 @@ extern volatile bool must_stop;
 // Main features
 void barrido_archim(functions_t func);
 void barrido_linear(functions_t func);
+float calibrate();
 
 void wait_to_start(); // TODO: mover
 
@@ -36,6 +37,7 @@ void wait_to_start(); // TODO: mover
 size_t create_table_archim(archimedean_param_t, step_mode_t);
 size_t create_table_linear(linear_param_t, step_mode_t);
 int mm_to_steps(float,motor);
+float steps_to_mm(int,motor);
 int get_distance(motor);
 
 void manual_control(motor&);
