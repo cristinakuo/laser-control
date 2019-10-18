@@ -23,3 +23,18 @@ long unsigned Archimedean::eval(size_t i) {
 float Archimedean::getX0() const {
     return _X0;
 }
+
+Linear::~Linear() {
+}
+
+Linear::Linear(float X0_measured, float linear_speed, float angular_speed, float dx) {
+    _X0_measured = X0_measured;
+    _linearSpeed = linear_speed;
+    _angularSpeed = angular_speed;
+    _dx = dx;
+    _X0 = floor(X0_measured/dx) * dx;
+}
+
+long unsigned Linear::eval(size_t i) {
+    return ((_dx*i)/_linearSpeed);
+}

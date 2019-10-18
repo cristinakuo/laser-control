@@ -24,5 +24,6 @@ typedef struct linear_params {
 const int test_global_variable = 1;
 const int STEP_PARAM_ADDR = 0;
 const int ARCHIM_PARAM_ADDR = STEP_PARAM_ADDR + sizeof(step_param_t);
+const int LINEAR_PARAM_ADDR = ARCHIM_PARAM_ADDR + sizeof(archimedean_param_t);
 
 #endif

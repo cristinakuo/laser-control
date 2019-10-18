@@ -116,7 +116,7 @@ void execute_sub2sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEM
 	Serial.println("This is Arquimedes:");
 	Serial.println("Press * to go back");
 
-    barrido(ARCHIMEDEAN);
+    barrido_archim(ARCHIMEDEAN);
 	delay(1000);
     st.has_opt = true;
 	st.input = 1;  // Vuelve automaticamente atras
@@ -125,6 +125,14 @@ void execute_sub2sub1_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEM
 void execute_sub2sub2_menu(menu_state_t &st, menu_list_t menu_list[NUM_MENU_ITEMS]) {
 	Serial.println("This is Lineal:");
 	Serial.println("1. Go back"); 
+
+    Serial.println("This is Arquimedes:");
+	Serial.println("Press * to go back");
+
+    barrido_linear(LINEAR);
+	delay(1000);
+    st.has_opt = true;
+	st.input = 1;  // Vuelve automaticamente atras
 }
 
 

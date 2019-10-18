@@ -1,7 +1,7 @@
 #include "feature.hpp"
 
 // Archimedean 
-void barrido(functions_t func) {
+void barrido_archim(functions_t func) {
     ask_for_new_archimedean_params(); // TODO: make object oriented
     archimedean_param_t parameters;
     // TODO: add X_min
@@ -25,7 +25,58 @@ void barrido(functions_t func) {
     carrito.setDirection(chosenDir);
     
     // Creacion de la tabla
-    table_size = create_table(parameters, chosenMode);
+    table_size = create_table_archim(parameters, chosenMode);
+
+    // Teclado para empezar
+    wait_to_start();
+
+    //TODO: que diga si es arq o lineal
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("   AutoMode");
+    lcd.setCursor(0,1); 
+    lcd.print("Press * to stop"); 
+
+    initial_time = micros();
+    carrito.init();
+    target.init();
+    
+    // Loop
+    char stopkey = '0'; // TODO: Pongo en cualquiera
+    while (stopkey != '*' && must_stop == false) {
+        carrito.move();
+        target.move();
+        stopkey = customKeypad.getKey();
+    }
+    Serial.println("Stopped.");
+    
+}
+
+void barrido_linear(functions_t func) {
+    ask_for_new_linear_params(); // TODO: make object oriented
+    linear_param_t parameters;
+    // TODO: add X_min
+    EEPROM.get(LINEAR_PARAM_ADDR, parameters);
+
+    lcd.clear();
+    lcd.setCursor(0,0); 
+    lcd.print("UsingParam:"); 
+    lcd.setCursor(0,1); 
+    lcd.print(parameters.linear_speed);
+    lcd.setCursor(7,1);     
+    lcd.print(parameters.angular_speed);
+    delay(2000);
+    
+    carrito.log = true; // DEBUG: esto es harcodeado para imprimir
+    target.log = false; // DEBUG: esto es harcodeado
+    
+    // Calibracion (otro feature)
+
+    target.setDirection(chosenDir);
+    carrito.setDirection(chosenDir);
+    
+    // Creacion de la tabla
+    table_size = create_table_linear(parameters, chosenMode);
 
     // Teclado para empezar
     wait_to_start();
@@ -68,7 +119,7 @@ void wait_to_start() {
 }
 
 // Returns time in micro seconds, timing for full steps
-size_t create_table(archimedean_param_t parameters, step_mode_t mode) {
+size_t create_table_archim(archimedean_param_t parameters, step_mode_t mode) {
  
     long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
     // Saving just for reference
@@ -122,6 +173,22 @@ size_t create_table(archimedean_param_t parameters, step_mode_t mode) {
     // Write in table
     for (i = i_limit; i < length; i++) {
         timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
+    }
+    return length;
+}
+
+// Overload
+// Returns time in micro seconds, timing for full steps
+size_t create_table_linear(linear_param_t parameters, step_mode_t mode) {
+ 
+    long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
+    float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
+    Linear function = Linear(X0_measured, parameters.linear_speed,parameters.angular_speed , dx);
+    size_t length = ARRAY_MAX_LEN;
+    size_t i;
+
+    for(i = 1; i <= length; i++) {
+        timeTable[i-1] = function.eval(i); // [micro seconds]
     }
     return length;
 }

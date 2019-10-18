@@ -30,4 +30,18 @@ private:
     float _F;
 };
 
+class Linear: public Function
+{
+public:
+    ~Linear();
+    Linear(float X0_measured, float linear_speed, float angular_speed, float dx);
+    long unsigned eval(size_t i);
+    
+private:
+    float _X0_measured; // TODO: maybe not necessary
+    float _linearSpeed;
+    float _angularSpeed; // TODO: make table for angular speed (target motor)
+    float _dx;
+    float _X0;
+};
 #endif
