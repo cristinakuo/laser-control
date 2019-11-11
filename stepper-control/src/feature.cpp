@@ -88,11 +88,13 @@ float calibrate() {
 // Archimedean 
 void barrido_archim(functions_t func) {
     float X0_measured = calibrate();
+
     ask_for_new_archimedean_params(); // TODO: make object oriented
     archimedean_param_t parameters;
     // TODO: add X_min
+    // TODO: print everything in LCD of 4 lines
     EEPROM.get(ARCHIM_PARAM_ADDR, parameters);
-
+    parameters.X0_measured = X0_measured;
     lcd.clear();
     lcd.setCursor(0,0); 
     lcd.print("UsingParam:"); 
@@ -111,7 +113,8 @@ void barrido_archim(functions_t func) {
     carrito.setDirection(chosenDir);
     
     // Creacion de la tabla
-    table_size = create_table_archim(parameters, chosenMode);
+    Table table = Table(); // TODO: make it a class method
+    table_size = table.create(parameters, chosenMode);
 
     // Teclado para empezar
     wait_to_start();
@@ -162,7 +165,8 @@ void barrido_linear(functions_t func) {
     carrito.setDirection(chosenDir);
     
     // Creacion de la tabla
-    table_size = create_table_linear(parameters, chosenMode);
+    Table table = Table();
+    table_size = table.create(parameters, chosenMode);
 
     // Teclado para empezar
     wait_to_start();
@@ -204,80 +208,7 @@ void wait_to_start() {
     Serial.println("Starting..."); 
 }
 
-// Returns time in micro seconds, timing for full steps
-size_t create_table_archim(archimedean_param_t parameters, step_mode_t mode) {
- 
-    long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
-    // Saving just for reference
-    //long X_min = 1;
-    //float a = 0.9489; 
-    //float b = 0.6709;  
 
-    float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
-    Archimedean function = Archimedean(X0_measured, parameters.a, parameters.b, parameters.X_min, dx);
-    size_t length = round( function.getX0() / dx);
-    size_t i;
-
-    for(i = 1; i <= length; i++) {
-        timeTable[i-1] = function.eval(i); // [micro seconds]
-    }
-
-    size_t i_limit;   
-    int microsteps = 1;
-    long min_delay = 700; 
-    // Max velocity control
-    i_limit = floor(((X0_measured - parameters.X_min) * STEPS_PER_REV) / FULL_STEPS_PER_INTERVAL);
-
-    // TODO: error control
-    if (i_limit >= length) {
-        Serial.println("Error: array limit out of reach.");  
-    }
-
-    // TODO: modularize
-    if (mode == FULL) {
-        min_delay = 700; // Micros
-        microsteps = 1;
-    }
-    else if (mode == HALF) {
-        min_delay = 700;
-        microsteps = 2;
-    }
-    else if (mode == QUARTER) {
-        min_delay = 700;
-        microsteps = 4;
-    }
-    else if (mode == EIGHTH) {
-        min_delay = 150;
-        microsteps = 8;
-    }
-    else if (mode == SIXTEENTH) {
-        //min_delay = 100; // Esto esta repetido
-        min_delay = 200;
-        microsteps = 16;
-    }
-        
-    // Write in table
-    for (i = i_limit; i < length; i++) {
-        timeTable[i] = min_delay*microsteps* FULL_STEPS_PER_INTERVAL;
-    }
-    return length;
-}
-
-// Overload
-// Returns time in micro seconds, timing for full steps
-size_t create_table_linear(linear_param_t parameters, step_mode_t mode) {
- 
-    long X0_measured = 10; // [mm] TODO: this should be a parameter (obtained through calibration)
-    float dx = (float)(FULL_STEPS_PER_INTERVAL * MM_PER_REV) / STEPS_PER_REV; // [mm] Distance
-    Linear function = Linear(X0_measured, parameters.linear_speed,parameters.angular_speed , dx);
-    size_t length = ARRAY_MAX_LEN;
-    size_t i;
-
-    for(i = 1; i <= length; i++) {
-        timeTable[i-1] = function.eval(i); // [micro seconds]
-    }
-    return length;
-}
 
 void manual_control(motor &chosenMotor) {
     int STEP_PARAM_ADDR = 0; // TODO: fix this
@@ -290,14 +221,6 @@ void manual_control(motor &chosenMotor) {
     ask_for_new_step_param();
     step_param_t parameters;
     EEPROM.get(STEP_PARAM_ADDR, parameters);
-
-    // TEST
-    Serial.println("*******TEST********");
-    if (parameters.fine == 2.60 && parameters.coarse == 5.10) {
-        Serial.println("TEST SUCCESS");
-    } else {
-        Serial.println("TEST FAILURE");
-    }
     
     lcd.clear();
     lcd.setCursor(0,0); 

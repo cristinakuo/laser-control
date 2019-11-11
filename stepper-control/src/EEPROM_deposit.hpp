@@ -13,6 +13,7 @@ typedef struct params_arch {
     float a;
     float b;
     float X_min;
+    float X0_measured;
 } archimedean_param_t;
 
 typedef struct linear_params {
