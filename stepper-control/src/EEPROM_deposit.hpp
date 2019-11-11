@@ -19,6 +19,7 @@ typedef struct params_arch {
 typedef struct linear_params {
     float linear_speed; // [mm/s]
     float angular_speed; // [rad/s]
+    float X0_measured;
 } linear_param_t;
 
 // TODO: definir direccion para guardar parametros de funcion archimedean

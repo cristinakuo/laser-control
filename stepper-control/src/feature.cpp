@@ -142,8 +142,10 @@ void barrido_archim(functions_t func) {
 }
 
 void barrido_linear(functions_t func) {
+    float X0_measured = calibrate();
     ask_for_new_linear_params(); // TODO: make object oriented
     linear_param_t parameters;
+    parameters.X0_measured = X0_measured;
     // TODO: add X_min
     EEPROM.get(LINEAR_PARAM_ADDR, parameters);
 
